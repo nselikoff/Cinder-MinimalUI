@@ -9,7 +9,11 @@
 #pragma once
 
 #include "cinder/gl/gl.h"
-#include "ColorMode.h"
+#include "cinder/app/AppNative.h"
+
+using namespace ci;
+using namespace ci::app;
+using namespace std;
 
 namespace MinimalUI {
     
@@ -78,16 +82,12 @@ namespace MinimalUI {
         
         bool mCameraUp, mCameraDown, mCameraLeft, mCameraRight, mCameraIn, mCameraOut, mCameraClockwise, mCameraCounterclockwise;
         
-        std::vector<Leap::Hand> mHands;
-        
         int mState;
         int mFboResolution;
         
         ci::app::FullScreenOptions mFullScreenOptions;
 
         enum { STATE_DEFAULT, STATE_EDIT_CAMERA, STATE_EDIT_ATTRACTOR, STATE_DISCONNECTED };
-
-        ColorModeManager *mColorModeManager;
         
     };
 
