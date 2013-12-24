@@ -1,4 +1,4 @@
-MinimalUI#include "Label.h"
+#include "Label.h"
 
 using namespace ci;
 using namespace ci::app;

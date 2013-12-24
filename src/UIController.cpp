@@ -48,12 +48,12 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
     
 	mCbMouseDown = mWindow->getSignalMouseDown().connect( mDepth + 99, std::bind( &UIController::mouseDown, this, std::placeholders::_1 ) );
     
-    mLabelFont = Font( loadResource( RES_HELVETICA_NEUE_REGULAR ), 16 );
-    mSmallLabelFont = Font( loadResource( RES_HELVETICA_NEUE_REGULAR ), 12 );
-    mIconFont = Font( loadResource( RES_GLYPHICONS_REGULAR ), 22 );
-    mHeaderFont = Font( loadResource( RES_HELVETICA ), 48 );
-    mBodyFont = Font( loadResource( RES_GARAMOND ), 19 );
-    mFooterFont = Font( loadResource( RES_GARAMOND_ITALIC ), 14 );
+    mLabelFont = Font( "Helvetica", 16 );
+    mSmallLabelFont = Font( "Helvetica", 12 );
+//    mIconFont = Font( loadResource( RES_GLYPHICONS_REGULAR ), 22 );
+    mHeaderFont = Font( "Helvetica", 48 );
+    mBodyFont = Font( "Garamond", 19 );
+    mFooterFont = Font( "Garamond Italic", 14 );
     
     mInsertPosition = Vec2i( mMarginLarge, mMarginLarge );
     

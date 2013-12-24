@@ -3,7 +3,7 @@
 #include "UIElement.h"
 #include "UIController.h"
 
-namespace BeautifulChaos {
+namespace MinimalUI {
 
     class Slider : public UIElement {
     public:

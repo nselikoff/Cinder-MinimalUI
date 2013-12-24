@@ -3,17 +3,5 @@
 <template name="MinimalUI: Basic GL" parent="org.libcinder.apptemplates.basicopengl">
 	<requires>com.nathanselikoff.minimalui</requires>
 	<source replaceContents="true" replaceName="true">src/_TBOX_PREFIX_App.cpp</source>
-	<resource>resources/Garamond.ttf</resource>
-	<resource>resources/GaramondItalic.ttf</resource>
-	<resource>resources/glyphicons-regular.ttf</resource>
-	<resource>resources/HelveticaNeue.ttf</resource>
-	<resource>resources/HelveticaNeueUltraLight.ttf</resource>
-	<resource>resources/invert.frag</resource>
-	<resource>resources/particles.frag</resource>
-	<resource>resources/passThrough.vert</resource>
-	<resource>resources/passThrough2.vert</resource>
-	<resource>resources/toneMapping.frag</resource>
-	<resource>resources/vertexDisplacement.frag</resource>
-	<resource>resources/vertexDisplacement.vert</resource>
 </template>
 </cinder>
