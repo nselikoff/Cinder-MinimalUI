@@ -4,9 +4,6 @@
 #include "Button.h"
 #include "Label.h"
 
-using namespace ci;
-using namespace ci::app;
-using namespace std;
 using namespace MinimalUI;
 
 int UIController::DEFAULT_PANEL_WIDTH = 216;
@@ -60,9 +57,9 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
     setupFbo();
 }
 
-UIControllerRef UIController::create( const string &aParamString )
+UIControllerRef UIController::create( const string &aParamString, app::WindowRef aWindow )
 {
-    return shared_ptr<UIController>( new UIController( App::get()->getWindow(), aParamString ) );
+    return shared_ptr<UIController>( new UIController( aWindow, aParamString ) );
 }
 
 void UIController::resize()
@@ -233,6 +230,7 @@ Font UIController::getFont( const string &aStyle )
 void UIController::setupFbo()
 {
 	mFormat.enableDepthBuffer( false );
+	mFormat.setSamples(2);
     mFbo = gl::Fbo( DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat );
     mFbo.bindFramebuffer();
 	gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 0.0f ) );

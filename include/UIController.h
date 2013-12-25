@@ -7,6 +7,11 @@
 #include "cinder/Timeline.h"
 #include <vector>
 
+using namespace ci;
+using namespace ci::app;
+using namespace std;
+
+
 namespace MinimalUI {
     
     class UIElement;
@@ -26,7 +31,7 @@ namespace MinimalUI {
         static ci::ColorA ACTIVE_STROKE_COLOR;
 
         UIController( ci::app::WindowRef window, const std::string &aParamString );
-        static UIControllerRef create( const std::string &aParamString = "{}" );
+        static UIControllerRef create( const std::string &aParamString = "{}", ci::app::WindowRef aWindow = ci::app::App::get()->getWindow() );
         
         void mouseDown( ci::app::MouseEvent &event );
 
