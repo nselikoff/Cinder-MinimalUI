@@ -81,7 +81,7 @@ namespace MinimalUI {
         int mMarginLarge;
         
         std::vector<UIElementRef> mUIElements;
-        int mWidth, mHeight;
+        int mWidth, mHeight, mX, mY;
         ci::Area mBounds;
         ci::Vec2i mPosition;
         ci::Vec2i mInsertPosition;

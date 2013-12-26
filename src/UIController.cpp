@@ -21,6 +21,8 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
     mVisible = params.hasChild( "visible" ) ? params["visible"].getValue<bool>() : true;
     mAlpha = mVisible ? 1.0f : 0.0f;
     mWidth = params.hasChild( "width" ) ? params["width"].getValue<int>() : DEFAULT_PANEL_WIDTH;
+    mX = params.hasChild( "x" ) ? params["x"].getValue<int>() : 0;
+    mY = params.hasChild( "y" ) ? params["y"].getValue<int>() : 0;
     if ( params.hasChild( "height" ) ) {
         mHeightSpecified = true;
         mHeight = params["height"].getValue<int>();
@@ -70,10 +72,10 @@ void UIController::resize()
         mPosition = getWindow()->getCenter() - size / 2;
     } else if ( mHeightSpecified ) {
         size = Vec2i( mWidth, mHeight );
-        mPosition = Vec2i::zero();
+        mPosition = Vec2i( mX, mY );
     } else {
         size = Vec2i( mWidth, getWindow()->getHeight() );
-        mPosition = Vec2i::zero();
+        mPosition = Vec2i( mX, mY );
     }
     mBounds = Area( Vec2i::zero(), size );
 }
@@ -230,7 +232,7 @@ Font UIController::getFont( const string &aStyle )
 void UIController::setupFbo()
 {
 	mFormat.enableDepthBuffer( false );
-	mFormat.setSamples(2);
+	mFormat.setSamples(8);
     mFbo = gl::Fbo( DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat );
     mFbo.bindFramebuffer();
 	gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 0.0f ) );
