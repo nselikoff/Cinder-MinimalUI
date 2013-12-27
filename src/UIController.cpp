@@ -159,48 +159,59 @@ void UIController::hide()
     timeline().apply( &mAlpha, 0.0f, 0.25f ).finishFn( [&]{ mVisible = false; } );
 }
 
-void UIController::addSlider( const string &aName, float *aValueToLink, const string &aParamString )
+UIElementRef UIController::addSlider( const string &aName, float *aValueToLink, const string &aParamString )
 {
-    mUIElements.push_back( Slider::create( this, aName, aValueToLink, aParamString ) );
+    UIElementRef sliderRef = Slider::create( this, aName, aValueToLink, aParamString );
+    addElement( sliderRef );
+    return sliderRef;
 }
 
-void UIController::addButton( const string &aName, const function<void( bool )> &aEventHandler, const string &aParamString )
+UIElementRef UIController::addButton( const string &aName, const function<void( bool )> &aEventHandler, const string &aParamString )
 {
-    mUIElements.push_back( Button::create( this, aName, aEventHandler, aParamString ) );
+    UIElementRef buttonRef = Button::create( this, aName, aEventHandler, aParamString );
+    addElement( buttonRef );
+    return buttonRef;
 }
 
-void UIController::addLinkedButton( const string &aName, const function<void( bool )> &aEventHandler, bool *aLinkedState, const string &aParamString )
+UIElementRef UIController::addLinkedButton( const string &aName, const function<void( bool )> &aEventHandler, bool *aLinkedState, const string &aParamString )
 {
-    mUIElements.push_back( LinkedButton::create( this, aName, aEventHandler, aLinkedState, aParamString ) );
+    UIElementRef linkedButtonRef = LinkedButton::create( this, aName, aEventHandler, aLinkedState, aParamString );
+    addElement( linkedButtonRef );
+    return linkedButtonRef;
 }
 
-void UIController::addLabel( const string &aName, const string &aParamString )
+UIElementRef UIController::addLabel( const string &aName, const string &aParamString )
 {
-    mUIElements.push_back( Label::create( this, aName, aParamString ) );
+    UIElementRef labelRef = Label::create( this, aName, aParamString );
+    addElement( labelRef );
+    return labelRef;
 }
 
-void UIController::addSlider2D( const string &aName, Vec2f *aValueToLink, const string &aParamString )
+UIElementRef UIController::addSlider2D( const string &aName, Vec2f *aValueToLink, const string &aParamString )
 {
-    mUIElements.push_back( Slider2D::create( this, aName, aValueToLink, aParamString ) );
+    UIElementRef slider2DRef = Slider2D::create( this, aName, aValueToLink, aParamString );
+    addElement( slider2DRef );
+    return slider2DRef;
 }
 
-void UIController::addToggleSlider( const string &aSliderName, float *aValueToLink, const string &aButtonName, const function<void (bool)> &aEventHandler, const string &aSliderParamString, const string &aButtonParamString )
+UIElementRef UIController::addToggleSlider( const string &aSliderName, float *aValueToLink, const string &aButtonName, const function<void (bool)> &aEventHandler, const string &aSliderParamString, const string &aButtonParamString )
 {
     // create the slider
-    UIElementRef newSlider = Slider::create( this, aSliderName, aValueToLink, aSliderParamString );
+    UIElementRef toggleSliderRef = Slider::create( this, aSliderName, aValueToLink, aSliderParamString );
     
     // add the slider to the controller
-    mUIElements.push_back( newSlider );
+    addElement( toggleSliderRef );
 
     // create the button
     UIElementRef newButtonRef = Button::create( this, aButtonName, aEventHandler, aButtonParamString );
     
     // add an additional event handler to link the button to the slider
     std::shared_ptr<class Button> newButton = std::static_pointer_cast<class Button>(newButtonRef);
-    newButton->addEventHandler( std::bind(&Slider::setLocked, newSlider, std::placeholders::_1 ) );
+    newButton->addEventHandler( std::bind(&Slider::setLocked, toggleSliderRef, std::placeholders::_1 ) );
     
     // add the button to the controller
-    mUIElements.push_back( newButton );
+    addElement( newButton );
+	return toggleSliderRef;
 }
 
 void UIController::releaseGroup( const string &aGroup )
@@ -232,7 +243,7 @@ Font UIController::getFont( const string &aStyle )
 void UIController::setupFbo()
 {
 	mFormat.enableDepthBuffer( false );
-	mFormat.setSamples(8);
+	mFormat.setSamples(4);
     mFbo = gl::Fbo( DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat );
     mFbo.bindFramebuffer();
 	gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 0.0f ) );

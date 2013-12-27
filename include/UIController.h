@@ -34,13 +34,15 @@ namespace MinimalUI {
         static UIControllerRef create( const std::string &aParamString = "{}", ci::app::WindowRef aWindow = ci::app::App::get()->getWindow() );
         
         void mouseDown( ci::app::MouseEvent &event );
+        
+        void addElement( const UIElementRef &aElement ) { mUIElements.push_back( aElement ); }
 
-        void addSlider( const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}" );
-        void addSlider2D( const std::string &aName, ci::Vec2f *aValueToLink, const std::string &aParamString = "{}" );
-        void addToggleSlider( const std::string &aSliderName, float *aValueToLink, const std::string &aButtonName, const std::function<void( bool )>& aEventHandler, const std::string &aSliderParamString = "{}", const std::string &aButtonParamString = "{}" );
-        void addButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString = "{}" );
-        void addLinkedButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, const std::string &aParamString = "{}" );
-        void addLabel( const std::string &aName, const std::string &aParamString = "{}" );
+        UIElementRef addSlider( const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}" );
+        UIElementRef addSlider2D( const std::string &aName, ci::Vec2f *aValueToLink, const std::string &aParamString = "{}" );
+        UIElementRef addToggleSlider( const std::string &aSliderName, float *aValueToLink, const std::string &aButtonName, const std::function<void( bool )>& aEventHandler, const std::string &aSliderParamString = "{}", const std::string &aButtonParamString = "{}" );
+        UIElementRef addButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString = "{}" );
+        UIElementRef addLinkedButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, const std::string &aParamString = "{}" );
+        UIElementRef addLabel( const std::string &aName, const std::string &aParamString = "{}" );
         void addSeparator() { mInsertPosition.x = mMarginLarge; mInsertPosition.y += mMarginLarge; }
         
         void offsetInsertPosition( const ci::Vec2i &offset ) { mInsertPosition += offset; }
