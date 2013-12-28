@@ -43,6 +43,10 @@ namespace MinimalUI {
         bool isLocked() const { return mLocked; }
         
         ci::ColorA getBackgroundColor() const { return mBackgroundColor; }
+        void setBackgroundColor( const ci::ColorA &aBackgroundColor ) { mBackgroundColor = aBackgroundColor; }
+        
+        ci::ColorA getForegroundColor() const { return mForegroundColor; }
+        void setForegroundColor( const ci::ColorA &aForegroundColor ) { mForegroundColor = aForegroundColor; }
         
         std::string getName() const { return mName; }
         void setName( const std::string &aName ) { mName = aName; renderNameTexture(); }
@@ -82,7 +86,7 @@ namespace MinimalUI {
         ci::Font mFont;
         ci::TextBox::Alignment mAlignment;
         ci::gl::Texture mNameTexture;
-        ci::ColorA mBackgroundColor, mNameColor;
+        ci::ColorA mBackgroundColor, mForegroundColor, mNameColor;
         bool mActive;
         bool mLocked;
         bool mIcon;

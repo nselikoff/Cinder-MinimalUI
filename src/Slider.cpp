@@ -20,6 +20,21 @@ Slider::Slider( UIController *aUIController, const string &aName, float *aValueT
     mMin = hasParam( "min" ) ? getParam<float>( "min" ) : 0.0f;
     mMax = hasParam( "max" ) ? getParam<float>( "max" ) : 1.0f;
 
+	// set colors
+    std::stringstream str;
+    string strValue;
+    uint32_t hexValue;
+    strValue = hasParam( "foregroundColor" ) ? getParam<string>( "foregroundColor" ) : "0xFF12424A"; // should be same as DEFAULT_STROKE_COLOR
+    str << strValue;
+    str >> std::hex >> hexValue;
+    setForegroundColor( ColorA::hexA( hexValue ) );
+
+    strValue = hasParam( "backgroundColor" ) ? getParam<string>( "backgroundColor" ) : "0xFF000000"; // should be same as DEFAULT_BACKGROUND_COLOR
+    str.clear();
+    str << strValue;
+    str >> std::hex >> hexValue;
+    setBackgroundColor( ColorA::hexA( hexValue ) );
+
     // set size and render name texture
     int x = hasParam( "width" ) ? getParam<int>( "width" ) : Slider::DEFAULT_WIDTH;
     int y = Slider::DEFAULT_HEIGHT;
@@ -48,7 +63,7 @@ void Slider::draw()
     if ( isLocked() ) {
         gl::color( UIController::DEFAULT_STROKE_COLOR );
     } else {
-        gl::color( Color::black() );
+        gl::color( getBackgroundColor() );//Color::black() );
     }
     gl::drawSolidRect( getBounds() );
     
@@ -56,7 +71,7 @@ void Slider::draw()
     if ( isActive() ) {
         gl::color( UIController::ACTIVE_STROKE_COLOR );
     } else {
-        gl::color( UIController::DEFAULT_STROKE_COLOR );
+        gl::color( getForegroundColor() );//UIController::DEFAULT_STROKE_COLOR );
     }
     gl::drawStrokedRect( getBounds() );
     
@@ -66,7 +81,7 @@ void Slider::draw()
     } else if ( isActive() ) {
         gl::color( UIController::ACTIVE_STROKE_COLOR );
     } else {
-        gl::color( UIController::DEFAULT_STROKE_COLOR );
+        gl::color( getForegroundColor() );//UIController::DEFAULT_STROKE_COLOR );
     }
     Vec2f handleStart = Vec2f( mValue - Slider::DEFAULT_HANDLE_HALFWIDTH, getBounds().getY1() );
     Vec2f handleEnd = Vec2f( mValue + Slider::DEFAULT_HANDLE_HALFWIDTH, getBounds().getY2() );
