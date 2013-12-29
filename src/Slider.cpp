@@ -8,6 +8,9 @@ using namespace MinimalUI;
 int Slider::DEFAULT_HEIGHT = UIElement::DEFAULT_HEIGHT;
 int Slider::DEFAULT_WIDTH = UIController::DEFAULT_PANEL_WIDTH - UIController::DEFAULT_MARGIN_LARGE * 2;
 int Slider::DEFAULT_HANDLE_HALFWIDTH = 8;
+int ButtonSlider::DEFAULT_HEIGHT = UIElement::DEFAULT_HEIGHT;
+int ButtonSlider::DEFAULT_WIDTH = UIElement::DEFAULT_HEIGHT;
+int ButtonSlider::DEFAULT_HANDLE_HALFHEIGHT = 8;
 int Slider2D::DEFAULT_HEIGHT = 96;
 int Slider2D::DEFAULT_WIDTH = 96;
 int Slider2D::DEFAULT_HANDLE_HALFWIDTH = 4;
@@ -71,7 +74,7 @@ void Slider::draw()
     if ( isActive() ) {
         gl::color( UIController::ACTIVE_STROKE_COLOR );
     } else {
-        gl::color( getForegroundColor() );//UIController::DEFAULT_STROKE_COLOR );
+        gl::color( UIController::DEFAULT_STROKE_COLOR );
     }
     gl::drawStrokedRect( getBounds() );
     
@@ -81,7 +84,7 @@ void Slider::draw()
     } else if ( isActive() ) {
         gl::color( UIController::ACTIVE_STROKE_COLOR );
     } else {
-        gl::color( getForegroundColor() );//UIController::DEFAULT_STROKE_COLOR );
+        gl::color( UIController::DEFAULT_STROKE_COLOR );
     }
     Vec2f handleStart = Vec2f( mValue - Slider::DEFAULT_HANDLE_HALFWIDTH, getBounds().getY1() );
     Vec2f handleEnd = Vec2f( mValue + Slider::DEFAULT_HANDLE_HALFWIDTH, getBounds().getY2() );
@@ -113,7 +116,109 @@ void Slider::updatePosition( const int &aPos )
     *mLinkedValue = lmap<float>(mValue, mScreenMin, mScreenMax, mMin, mMax );
 }
 
+// ButtonSlider
+ButtonSlider::ButtonSlider( UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString )
+: UIElement( aUIController, aName, aParamString )
+{
+    // initialize unique variables
+    mLinkedValue = aValueToLink;
+    mMin = hasParam( "min" ) ? getParam<float>( "min" ) : 0.0f;
+    mMax = hasParam( "max" ) ? getParam<float>( "max" ) : 1.0f;
 
+	// set colors
+    std::stringstream str;
+    string strValue;
+    uint32_t hexValue;
+    strValue = hasParam( "foregroundColor" ) ? getParam<string>( "foregroundColor" ) : "0xFF12424A"; // should be same as DEFAULT_STROKE_COLOR
+    str << strValue;
+    str >> std::hex >> hexValue;
+    setForegroundColor( ColorA::hexA( hexValue ) );
+
+    strValue = hasParam( "backgroundColor" ) ? getParam<string>( "backgroundColor" ) : "0xFF000000"; // should be same as DEFAULT_BACKGROUND_COLOR
+    str.clear();
+    str << strValue;
+    str >> std::hex >> hexValue;
+    setBackgroundColor( ColorA::hexA( hexValue ) );
+
+    // set size and render name texture
+    int x = ButtonSlider::DEFAULT_WIDTH;
+    int y = ButtonSlider::DEFAULT_HEIGHT;
+    setSize( Vec2i( x, y ) );
+    renderNameTexture();
+
+    // set position and bounds
+    setPositionAndBounds();
+
+    // set screen min and max
+    mScreenMin = getPosition().y + ButtonSlider::DEFAULT_HANDLE_HALFHEIGHT;
+    mScreenMax = getBounds().getY2() - ButtonSlider::DEFAULT_HANDLE_HALFHEIGHT;
+    
+    // set screen value
+    update();
+}
+
+UIElementRef ButtonSlider::create( UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString )
+{
+    return shared_ptr<ButtonSlider>( new ButtonSlider( aUIController, aName, aValueToLink, aParamString ) );
+}
+
+void ButtonSlider::draw()
+{
+    // draw the solid rect
+    if ( isLocked() ) {
+        gl::color( UIController::DEFAULT_STROKE_COLOR );
+    } else {
+        gl::color( getBackgroundColor() );//Color::black() );
+    }
+    gl::drawSolidRect( getBounds() );
+    
+    // draw the outer rect
+    if ( isActive() ) {
+        gl::color( UIController::ACTIVE_STROKE_COLOR );
+    } else {
+        gl::color( UIController::DEFAULT_STROKE_COLOR );//getForegroundColor() );//UIController::DEFAULT_STROKE_COLOR );
+    }
+    gl::drawStrokedRect( getBounds() );
+    
+    // draw the handle
+    if ( isLocked() ) {
+        gl::color( Color::black() );
+    } else if ( isActive() ) {
+        gl::color( UIController::ACTIVE_STROKE_COLOR );
+    } else {
+        gl::color( UIController::DEFAULT_STROKE_COLOR );//getForegroundColor() );//UIController::DEFAULT_STROKE_COLOR );
+    }
+    /*Vec2f handleStart = Vec2f( mValue - SliderV::DEFAULT_HANDLE_HALFHEIGHT, getBounds().getX1() );
+    Vec2f handleEnd = Vec2f( mValue + SliderV::DEFAULT_HANDLE_HALFHEIGHT, getBounds().getX2() );
+    gl::drawStrokedRect( Rectf( handleStart, handleEnd ) );
+    gl::drawSolidRect( Rectf( handleStart, handleEnd ) );*/
+    
+    // draw the label
+    drawLabel();
+}
+
+void ButtonSlider::update()
+{
+    mValue = lmap<float>(*mLinkedValue, mMin, mMax, getBounds().getY1() - ButtonSlider::DEFAULT_HANDLE_HALFHEIGHT, getPosition().y + ButtonSlider::DEFAULT_HANDLE_HALFHEIGHT );
+}
+
+void ButtonSlider::handleMouseDown( const Vec2i &aMousePos )
+{
+    updatePosition( aMousePos.y );
+}
+
+void ButtonSlider::handleMouseDrag( const Vec2i &aMousePos )
+{
+    updatePosition( math<int>::clamp( aMousePos.y, mScreenMin, mScreenMax ) );
+}
+
+void ButtonSlider::updatePosition( const int &aPos )
+{
+    mValue = aPos;
+    *mLinkedValue = lmap<float>(mValue, mScreenMax, mScreenMin, mMin, mMax );
+}
+
+// Slider2D
 Slider2D::Slider2D( UIController *aUIController, const string &aName, Vec2f *aValueToLink, const string &aParamString )
 : UIElement( aUIController, aName, aParamString )
 {

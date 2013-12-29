@@ -134,6 +134,7 @@ void UIController::draw()
     // draw the FBO to the screen
     gl::color( ColorA( mAlpha, mAlpha, mAlpha, mAlpha ) );
 	gl::draw( mFbo.getTexture() );
+	gl::disableAlphaBlending();
 }
 
 void UIController::update()
@@ -164,6 +165,13 @@ UIElementRef UIController::addSlider( const string &aName, float *aValueToLink, 
     UIElementRef sliderRef = Slider::create( this, aName, aValueToLink, aParamString );
     addElement( sliderRef );
     return sliderRef;
+}
+
+UIElementRef UIController::addButtonSlider( const string &aName, float *aValueToLink, const string &aParamString )
+{
+    UIElementRef buttonSliderRef = ButtonSlider::create( this, aName, aValueToLink, aParamString );
+    addElement( buttonSliderRef );
+    return buttonSliderRef;
 }
 
 UIElementRef UIController::addButton( const string &aName, const function<void( bool )> &aEventHandler, const string &aParamString )
@@ -243,7 +251,7 @@ Font UIController::getFont( const string &aStyle )
 void UIController::setupFbo()
 {
 	mFormat.enableDepthBuffer( false );
-	mFormat.setSamples(4);
+	mFormat.setSamples(2);
     mFbo = gl::Fbo( DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat );
     mFbo.bindFramebuffer();
 	gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 0.0f ) );
