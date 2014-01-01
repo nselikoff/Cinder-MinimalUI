@@ -38,7 +38,6 @@ namespace MinimalUI {
         void addElement( const UIElementRef &aElement ) { mUIElements.push_back( aElement ); }
 
         UIElementRef addSlider( const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}" );
-        UIElementRef addButtonSlider( const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}" );
         UIElementRef addSlider2D( const std::string &aName, ci::Vec2f *aValueToLink, const std::string &aParamString = "{}" );
         UIElementRef addToggleSlider( const std::string &aSliderName, float *aValueToLink, const std::string &aButtonName, const std::function<void( bool )>& aEventHandler, const std::string &aSliderParamString = "{}", const std::string &aButtonParamString = "{}" );
         UIElementRef addButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString = "{}" );
@@ -93,6 +92,7 @@ namespace MinimalUI {
         
         ci::gl::Fbo mFbo;
         ci::gl::Fbo::Format mFormat;
+		int mFboNumSamples;
         ci::Anim<float> mAlpha;
     };
     

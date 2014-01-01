@@ -55,7 +55,8 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
     mFooterFont = Font( "Garamond Italic", 14 );
     
     mInsertPosition = Vec2i( mMarginLarge, mMarginLarge );
-    
+
+	mFboNumSamples = params.hasChild( "fboNumSamples" ) ? params["fboNumSamples"].getValue<int>() : 0;
     setupFbo();
 }
 
@@ -167,13 +168,6 @@ UIElementRef UIController::addSlider( const string &aName, float *aValueToLink, 
     return sliderRef;
 }
 
-UIElementRef UIController::addButtonSlider( const string &aName, float *aValueToLink, const string &aParamString )
-{
-    UIElementRef buttonSliderRef = ButtonSlider::create( this, aName, aValueToLink, aParamString );
-    addElement( buttonSliderRef );
-    return buttonSliderRef;
-}
-
 UIElementRef UIController::addButton( const string &aName, const function<void( bool )> &aEventHandler, const string &aParamString )
 {
     UIElementRef buttonRef = Button::create( this, aName, aEventHandler, aParamString );
@@ -251,7 +245,7 @@ Font UIController::getFont( const string &aStyle )
 void UIController::setupFbo()
 {
 	mFormat.enableDepthBuffer( false );
-	mFormat.setSamples(2);
+	mFormat.setSamples( mFboNumSamples );
     mFbo = gl::Fbo( DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat );
     mFbo.bindFramebuffer();
 	gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 0.0f ) );
