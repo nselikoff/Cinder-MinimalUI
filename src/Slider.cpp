@@ -176,7 +176,7 @@ void ButtonSlider::draw()
     if ( isActive() ) {
         gl::color( UIController::ACTIVE_STROKE_COLOR );
     } else {
-        gl::color( UIController::DEFAULT_STROKE_COLOR );//getForegroundColor() );//UIController::DEFAULT_STROKE_COLOR );
+        gl::color( UIController::DEFAULT_STROKE_COLOR );
     }
     gl::drawStrokedRect( getBounds() );
     
@@ -186,12 +186,8 @@ void ButtonSlider::draw()
     } else if ( isActive() ) {
         gl::color( UIController::ACTIVE_STROKE_COLOR );
     } else {
-        gl::color( UIController::DEFAULT_STROKE_COLOR );//getForegroundColor() );//UIController::DEFAULT_STROKE_COLOR );
+        gl::color( UIController::DEFAULT_STROKE_COLOR );
     }
-    /*Vec2f handleStart = Vec2f( mValue - SliderV::DEFAULT_HANDLE_HALFHEIGHT, getBounds().getX1() );
-    Vec2f handleEnd = Vec2f( mValue + SliderV::DEFAULT_HANDLE_HALFHEIGHT, getBounds().getX2() );
-    gl::drawStrokedRect( Rectf( handleStart, handleEnd ) );
-    gl::drawSolidRect( Rectf( handleStart, handleEnd ) );*/
     
     // draw the label
     drawLabel();
