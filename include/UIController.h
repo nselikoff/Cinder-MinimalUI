@@ -29,6 +29,8 @@ namespace MinimalUI {
         static int DEFAULT_FBO_WIDTH;
         static ci::ColorA DEFAULT_STROKE_COLOR;
         static ci::ColorA ACTIVE_STROKE_COLOR;
+        static ci::ColorA DEFAULT_NAME_COLOR;
+        static ci::ColorA DEFAULT_BACKGROUND_COLOR;
 
         UIController( ci::app::WindowRef window, const std::string &aParamString );
         static UIControllerRef create( const std::string &aParamString = "{}", ci::app::WindowRef aWindow = ci::app::App::get()->getWindow() );

@@ -92,8 +92,6 @@ namespace MinimalUI {
         bool mIcon;
         bool mClear;
 
-        static ci::ColorA DEFAULT_NAME_COLOR;
-        static ci::ColorA DEFAULT_BACKGROUND_COLOR;
     };
     
 }
