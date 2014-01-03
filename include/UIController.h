@@ -29,6 +29,8 @@ namespace MinimalUI {
         static int DEFAULT_FBO_WIDTH;
         static ci::ColorA DEFAULT_STROKE_COLOR;
         static ci::ColorA ACTIVE_STROKE_COLOR;
+        static ci::ColorA DEFAULT_NAME_COLOR;
+        static ci::ColorA DEFAULT_BACKGROUND_COLOR;
 
         UIController( ci::app::WindowRef window, const std::string &aParamString );
         static UIControllerRef create( const std::string &aParamString = "{}", ci::app::WindowRef aWindow = ci::app::App::get()->getWindow() );
@@ -38,7 +40,6 @@ namespace MinimalUI {
         void addElement( const UIElementRef &aElement ) { mUIElements.push_back( aElement ); }
 
         UIElementRef addSlider( const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}" );
-        UIElementRef addButtonSlider( const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}" );
         UIElementRef addSlider2D( const std::string &aName, ci::Vec2f *aValueToLink, const std::string &aParamString = "{}" );
         UIElementRef addToggleSlider( const std::string &aSliderName, float *aValueToLink, const std::string &aButtonName, const std::function<void( bool )>& aEventHandler, const std::string &aSliderParamString = "{}", const std::string &aButtonParamString = "{}" );
         UIElementRef addButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString = "{}" );
@@ -93,6 +94,7 @@ namespace MinimalUI {
         
         ci::gl::Fbo mFbo;
         ci::gl::Fbo::Format mFormat;
+		int mFboNumSamples;
         ci::Anim<float> mAlpha;
     };
     

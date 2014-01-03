@@ -24,37 +24,13 @@ namespace MinimalUI {
         int mScreenMax;
         float mValue;
         float *mLinkedValue;
+		bool mHandleVisible;
+		bool mVertical;
 
         static int DEFAULT_HEIGHT;
         static int DEFAULT_WIDTH;
         static int DEFAULT_HANDLE_HALFWIDTH;
-    };
-    
-    class ButtonSlider : public UIElement {
-    public:
-        ButtonSlider( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::string &aParamString );
-        static UIElementRef create( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::string &aParamString );
-        
-        void draw();
-        void update();
-        
-        void handleMouseDown( const ci::Vec2i &aMousePos );
-        void handleMouseDrag( const ci::Vec2i &aMousePos );
-        void updatePosition( const int &aPos );
-        
-    private:
-        float mMin;
-        float mMax;
-        int mScreenMin;
-        int mScreenMax;
-        float mValue;
-        float *mLinkedValue;
-
-        static int DEFAULT_HEIGHT;
-        static int DEFAULT_WIDTH;
-        static int DEFAULT_HANDLE_HALFHEIGHT;
-    };
-    
+    };  
    
     class Slider2D : public UIElement {
     public:
