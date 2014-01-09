@@ -47,10 +47,13 @@ namespace MinimalUI {
         
         ci::ColorA getForegroundColor() const { return mForegroundColor; }
         void setForegroundColor( const ci::ColorA &aForegroundColor ) { mForegroundColor = aForegroundColor; }
-        
+
+		ci::ColorA getNameColor() const { return mNameColor; }
+        void setNameColor( const ci::ColorA &aNameColor ) { mNameColor = aNameColor; renderNameTexture(); }      
+
         std::string getName() const { return mName; }
         void setName( const std::string &aName ) { mName = aName; renderNameTexture(); }
-        
+ 
         ci::gl::Texture getNameTexture() const { return mNameTexture; }
         void setNameTexture( const ci::gl::Texture &aTexture ) { mNameTexture = aTexture; }
         void drawLabel();
