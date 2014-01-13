@@ -74,6 +74,23 @@ UIElement::UIElement( UIController *aUIController, const std::string &aName, con
 	} else {
 		mFont = mParent->getFont( "label" );
 	}
+	if ( hasParam( "backgroundimage" ) ) 
+	{
+		try
+		{
+			string fileName = getParam<string>( "backgroundimage" );
+			string pathToAssetFile = ( getAssetPath("") / fileName ).string();
+			
+			if ( fs::exists( pathToAssetFile ) ) 
+			{				
+				mBackgroundTexture = gl::Texture( loadImage( loadAsset( fileName ) ) );
+			}
+		}
+		catch ( ... ) 
+		{
+			
+		}
+	}
 }
 
 void UIElement::offsetInsertPosition()
@@ -128,6 +145,7 @@ void UIElement::renderNameTexture()
 void UIElement::drawLabel()
 {
 	gl::pushMatrices();
+	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, mBounds );
 	// intentional truncation
 	Vec2i offset = mBounds.getCenter() - mNameTexture.getSize() / 2;
 	gl::translate( offset );

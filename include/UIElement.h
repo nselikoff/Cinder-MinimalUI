@@ -3,6 +3,7 @@
 #include "cinder/app/AppNative.h"
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Texture.h"
+#include "cinder/ImageIo.h"
 #include "cinder/Text.h"
 #include "cinder/Json.h"
 
@@ -41,6 +42,8 @@ namespace MinimalUI {
         void setActive( const bool &aActive ) { mActive = aActive; }
         void deactivate() { mActive = false; }
         bool isLocked() const { return mLocked; }
+        
+        void setBackgroundTexture( const ci::gl::Texture &aBackgroundTexture ) { mBackgroundTexture = aBackgroundTexture; }
         
         ci::ColorA getBackgroundColor() const { return mBackgroundColor; }
         void setBackgroundColor( const ci::ColorA &aBackgroundColor ) { mBackgroundColor = aBackgroundColor; }
@@ -88,6 +91,7 @@ namespace MinimalUI {
         std::string mGroup;
         ci::Font mFont;
         ci::TextBox::Alignment mAlignment;
+        ci::gl::Texture mBackgroundTexture;
         ci::gl::Texture mNameTexture;
         ci::ColorA mBackgroundColor, mForegroundColor, mNameColor;
         bool mActive;
