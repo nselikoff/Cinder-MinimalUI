@@ -74,22 +74,9 @@ UIElement::UIElement( UIController *aUIController, const std::string &aName, con
 	} else {
 		mFont = mParent->getFont( "label" );
 	}
-	if ( hasParam( "backgroundimage" ) ) 
-	{
-		try
-		{
-			string fileName = getParam<string>( "backgroundimage" );
-			string pathToAssetFile = ( getAssetPath("") / fileName ).string();
-			
-			if ( fs::exists( pathToAssetFile ) ) 
-			{				
-				mBackgroundTexture = gl::Texture( loadImage( loadAsset( fileName ) ) );
-			}
-		}
-		catch ( ... ) 
-		{
-			
-		}
+
+	if ( hasParam( "backgroundImage" ) ) {
+		mBackgroundTexture = gl::Texture( loadImage( loadAsset( getParam<string>( "backgroundImage" ) ) ) );
 	}
 }
 
