@@ -84,7 +84,7 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
 
 	mLabelFont = Font( "Helvetica", 16 );
 	mSmallLabelFont = Font( "Helvetica", 12 );
-	//    mIconFont = Font( loadResource( RES_GLYPHICONS_REGULAR ), 22 );
+	//	mIconFont = Font( loadResource( RES_GLYPHICONS_REGULAR ), 22 );
 	mHeaderFont = Font( "Helvetica", 48 );
 	mBodyFont = Font( "Garamond", 19 );
 	mFooterFont = Font( "Garamond Italic", 14 );

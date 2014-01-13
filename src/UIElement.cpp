@@ -112,7 +112,7 @@ void UIElement::mouseUp( MouseEvent &event )
 	if ( mParent->isVisible() && !mLocked && mActive ) {
 		mActive = false;
 		handleMouseUp( event.getPos() - mParent->getPosition() );
-		//        event.setHandled(); // maybe?
+		//		event.setHandled(); // maybe?
 	}
 }
 
