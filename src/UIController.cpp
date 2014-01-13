@@ -6,6 +6,8 @@
 
 using namespace MinimalUI;
 
+class FontStyleExc;
+
 int UIController::DEFAULT_PANEL_WIDTH = 216;
 int UIController::DEFAULT_MARGIN_LARGE = 10;
 int UIController::DEFAULT_MARGIN_SMALL = 4;
@@ -82,12 +84,13 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
 
 	mCbMouseDown = mWindow->getSignalMouseDown().connect( mDepth + 99, std::bind( &UIController::mouseDown, this, std::placeholders::_1 ) );
 
-	mLabelFont = Font( "Helvetica", 16 );
-	mSmallLabelFont = Font( "Helvetica", 12 );
-	//	mIconFont = Font( loadResource( RES_GLYPHICONS_REGULAR ), 22 );
-	mHeaderFont = Font( "Helvetica", 48 );
-	mBodyFont = Font( "Garamond", 19 );
-	mFooterFont = Font( "Garamond Italic", 14 );
+    // set default fonts
+	setFont( "label", Font( "Helvetica", 16 ) );
+	setFont( "smallLabel", Font( "Helvetica", 12 ) );
+	setFont( "icon", Font( "Helvetica", 22 ) );
+	setFont( "header", Font( "Helvetica", 48 ) );
+	setFont( "body", Font( "Garamond", 19 ) );
+	setFont( "footer", Font( "Garamond Italic", 14 ) );
 
 	mInsertPosition = Vec2i( mMarginLarge, mMarginLarge );
 
@@ -269,7 +272,9 @@ void UIController::releaseGroup( const string &aGroup )
 
 Font UIController::getFont( const string &aStyle )
 {
-	if ( aStyle == "icon" ) {
+	if ( aStyle == "label" ) {
+        return mLabelFont;
+    } else if ( aStyle == "icon" ) {
 		return mIconFont;
 	} else if ( aStyle == "header" ) {
 		return mHeaderFont;
@@ -280,7 +285,26 @@ Font UIController::getFont( const string &aStyle )
 	} else if ( aStyle == "smallLabel" ) {
 		return mSmallLabelFont;
 	} else {
-		return mLabelFont;
+		throw FontStyleExc( aStyle );
+	}
+}
+
+void UIController::setFont( const string &aStyle, const ci::Font &aFont )
+{
+	if ( aStyle == "label" ) {
+        mLabelFont = aFont;
+    } else if ( aStyle == "icon" ) {
+		mIconFont = aFont;
+	} else if ( aStyle == "header" ) {
+		mHeaderFont = aFont;
+	} else if ( aStyle == "body" ) {
+		mBodyFont = aFont;
+	} else if ( aStyle == "footer" ) {
+		mFooterFont = aFont;
+	} else if ( aStyle == "smallLabel" ) {
+		mSmallLabelFont = aFont;
+	} else {
+		throw FontStyleExc( aStyle );
 	}
 }
 
