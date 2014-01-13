@@ -231,6 +231,13 @@ UIElementRef UIController::addSlider2D( const string &aName, Vec2f *aValueToLink
 	return slider2DRef;
 }
 
+UIElementRef UIController::addSliderCallback( const std::string &aName, float *aValueToLink, const std::function<void ()> &aEventHandler, const std::string &aParamString )
+{
+	UIElementRef sliderCallbackRef = SliderCallback::create( this, aName, aValueToLink, aEventHandler, aParamString );
+	addElement( sliderCallbackRef );
+    return sliderCallbackRef;
+}
+
 UIElementRef UIController::addToggleSlider( const string &aSliderName, float *aValueToLink, const string &aButtonName, const function<void (bool)> &aEventHandler, const string &aSliderParamString, const string &aButtonParamString )
 {
 	// create the slider
