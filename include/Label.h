@@ -11,7 +11,8 @@ namespace MinimalUI {
 		static UIElementRef create( UIController *aUIController, const std::string &aName, const std::string &aParamString );
 		void draw();
 		void update() { }
-
+		void setPositionAndBounds();
+		
 	private:
 		bool mNarrow;
 		

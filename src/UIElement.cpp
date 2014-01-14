@@ -102,7 +102,7 @@ void UIElement::mouseDown( MouseEvent &event )
 {
 	if ( mParent->isVisible() && !mLocked && mBounds.contains( event.getPos() - mParent->getPosition() ) ) {
 		mActive = true;
-		handleMouseDown( event.getPos() - mParent->getPosition(), event.isRight() );
+		handleMouseDown( toPixels( event.getPos() ) - mParent->getPosition(), event.isRight() );
 		event.setHandled();
 	}
 }
@@ -111,7 +111,7 @@ void UIElement::mouseUp( MouseEvent &event )
 {
 	if ( mParent->isVisible() && !mLocked && mActive ) {
 		mActive = false;
-		handleMouseUp( event.getPos() - mParent->getPosition() );
+		handleMouseUp( toPixels( event.getPos() ) - mParent->getPosition() );
 		//		event.setHandled(); // maybe?
 	}
 }
@@ -119,13 +119,13 @@ void UIElement::mouseUp( MouseEvent &event )
 void UIElement::mouseDrag( MouseEvent &event )
 {
 	if ( mParent->isVisible() && !mLocked && mActive ) {
-		handleMouseDrag( event.getPos() - mParent->getPosition() );
+		handleMouseDrag( toPixels( event.getPos() ) - mParent->getPosition() );
 	}
 }
 
 void UIElement::renderNameTexture()
 {
-	TextBox textBox = TextBox().size( Vec2i( mSize.x, TextBox::GROW ) ).font( mFont ).color( mNameColor ).alignment( mAlignment ).text( mName );
+	TextBox textBox = TextBox().size( Vec2i( toPixels( mSize.x ), TextBox::GROW ) ).font( mFont ).color( mNameColor ).alignment( mAlignment ).text( mName );
 	mNameTexture = textBox.render();
 }
 
@@ -135,7 +135,7 @@ void UIElement::drawLabel()
 	gl::color( Color::white() );
 	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, mBounds );
 	// intentional truncation
-	Vec2i offset = mBounds.getCenter() - mNameTexture.getSize() / 2;
+	Vec2i offset = toPixels( mBounds.getCenter() ) - mNameTexture.getSize() / 2;
 	gl::translate( offset );
 	gl::draw( mNameTexture );
 	gl::popMatrices();

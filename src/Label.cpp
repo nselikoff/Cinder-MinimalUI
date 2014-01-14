@@ -41,4 +41,12 @@ void Label::draw()
 	drawLabel();
 }
 
+void Label::setPositionAndBounds()
+{
+	mPosition = getParent()->getInsertPosition();
+	mBounds = Area( mPosition, mPosition + toPoints( mSize ) );
+	
+	// offset the insert position
+	offsetInsertPosition();
+}
 
