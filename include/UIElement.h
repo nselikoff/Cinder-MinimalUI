@@ -65,7 +65,7 @@ namespace MinimalUI {
 		virtual void update() = 0;
 		
 		virtual void release() { }
-		virtual void handleMouseDown( const ci::Vec2i &aMousePos ) { }
+		virtual void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight ) { }
 		virtual void handleMouseUp( const ci::Vec2i &aMousePos ) { }
 		virtual void handleMouseDrag( const ci::Vec2i &aMousePos ) { }
 		

@@ -13,17 +13,18 @@ namespace MinimalUI {
 		void draw();
 		void update();
 		
-		void handleMouseDown( const ci::Vec2i &aMousePos );
+		void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
 		void handleMouseDrag( const ci::Vec2i &aMousePos );
 		void updatePosition( const int &aPos );
 		
-	private:
+	protected:
 		float mMin;
 		float mMax;
 		int mScreenMin;
 		int mScreenMax;
 		float mValue;
 		float *mLinkedValue;
+		float mDefaultValue;
 		bool mHandleVisible;
 		bool mVertical;
 
@@ -40,7 +41,7 @@ namespace MinimalUI {
 		void draw();
 		void update();
 		
-		void handleMouseDown( const ci::Vec2i &aMousePos );
+		void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
 		void handleMouseDrag( const ci::Vec2i &aMousePos );
 		void updatePosition( const ci::Vec2i &aPos );
 		
@@ -51,6 +52,7 @@ namespace MinimalUI {
 		ci::Vec2i mScreenMax;
 		ci::Vec2f mValue;
 		ci::Vec2f *mLinkedValue;
+		ci::Vec2f mDefaultValue;
  
 		static int DEFAULT_HEIGHT;
 		static int DEFAULT_WIDTH;
@@ -62,7 +64,7 @@ namespace MinimalUI {
         SliderCallback( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
         static UIElementRef create( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
         
-        void handleMouseDown( const ci::Vec2i &aMousePos );
+        void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
         
         void addEventHandler( const std::function<void()>& aEventHandler );
         void callEventHandlers();
