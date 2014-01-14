@@ -18,6 +18,7 @@ Slider::Slider( UIController *aUIController, const string &aName, float *aValueT
 {
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
+	mDefaultValue = *aValueToLink;
 	mMin = hasParam( "min" ) ? getParam<float>( "min" ) : 0.0f;
 	mMax = hasParam( "max" ) ? getParam<float>( "max" ) : 1.0f;
 
@@ -128,14 +129,21 @@ void Slider::update()
 
 void Slider::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
 {
-	if ( mVertical )
+	if ( isRight )
 	{
-		updatePosition( aMousePos.y );
+		*mLinkedValue = mDefaultValue;		
 	}
-	else
+	else 
 	{
-		updatePosition( aMousePos.x );
-	}	
+		if ( mVertical )
+		{
+			updatePosition( aMousePos.y );
+		}
+		else
+		{
+			updatePosition( aMousePos.x );
+		}	
+	}
 }
 
 void Slider::handleMouseDrag( const Vec2i &aMousePos )

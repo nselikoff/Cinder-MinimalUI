@@ -24,6 +24,7 @@ namespace MinimalUI {
 		int mScreenMax;
 		float mValue;
 		float *mLinkedValue;
+		float mDefaultValue;
 		bool mHandleVisible;
 		bool mVertical;
 
