@@ -245,3 +245,34 @@ void Slider2D::updatePosition( const Vec2i &aPos )
 	(*mLinkedValue).x = lmap<float>(mValue.x, mScreenMin.x, mScreenMax.x, mMin.x, mMax.x );
 	(*mLinkedValue).y = lmap<float>(mValue.y, mScreenMin.y, mScreenMax.y, mMax.y, mMin.y );
 }
+
+// SliderCallback
+SliderCallback::SliderCallback( UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const string &aParamString )
+: Slider( aUIController, aName, aValueToLink, aParamString )
+{
+    // initialize unique variables
+    addEventHandler( aEventHandler );
+}
+
+UIElementRef SliderCallback::create( UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const string &aParamString )
+{
+    return shared_ptr<SliderCallback>( new SliderCallback( aUIController, aName, aValueToLink, aEventHandler, aParamString ) );
+}
+
+void SliderCallback::addEventHandler( const std::function<void()>& aEventHandler )
+{
+    mEventHandlers.push_back( aEventHandler );
+}
+
+void SliderCallback::callEventHandlers()
+{
+    for (int i = 0; i < mEventHandlers.size(); i++ ) {
+        mEventHandlers[i]();
+    }
+}
+
+void SliderCallback::handleMouseDown( const Vec2i &aMousePos )
+{
+    callEventHandlers();
+    updatePosition( aMousePos.x );
+}
