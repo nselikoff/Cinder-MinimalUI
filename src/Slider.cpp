@@ -285,8 +285,23 @@ void SliderCallback::callEventHandlers()
     }
 }
 
-void SliderCallback::handleMouseDown( const Vec2i &aMousePos )
+void SliderCallback::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
 {
     callEventHandlers();
-    updatePosition( aMousePos.x );
+
+	if ( isRight )
+	{
+		*mLinkedValue = mDefaultValue;
+	}
+	else
+	{
+		if ( mVertical )
+		{
+			updatePosition( aMousePos.y );
+		}
+		else
+		{
+			updatePosition( aMousePos.x );
+		}
+	}
 }
