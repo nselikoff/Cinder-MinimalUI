@@ -102,7 +102,7 @@ void UIElement::mouseDown( MouseEvent &event )
 {
 	if ( mParent->isVisible() && !mLocked && mBounds.contains( event.getPos() - mParent->getPosition() ) ) {
 		mActive = true;
-		handleMouseDown( event.getPos() - mParent->getPosition() );
+		handleMouseDown( event.getPos() - mParent->getPosition(), event.isRight() );
 		event.setHandled();
 	}
 }

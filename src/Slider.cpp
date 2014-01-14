@@ -126,7 +126,7 @@ void Slider::update()
 	}
 }
 
-void Slider::handleMouseDown( const Vec2i &aMousePos )
+void Slider::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
 {
 	if ( mVertical )
 	{
@@ -169,6 +169,7 @@ Slider2D::Slider2D( UIController *aUIController, const string &aName, Vec2f *aVa
 {
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
+	mDefaultValue = Vec2f( (*mLinkedValue).x, (*mLinkedValue).y );
 	float minX = hasParam( "minX" ) ? getParam<float>( "minX" ) : 0.0f;
 	float maxX = hasParam( "maxX" ) ? getParam<float>( "maxX" ) : 1.0f;
 	float minY = hasParam( "minY" ) ? getParam<float>( "minY" ) : 0.0f;
@@ -226,9 +227,14 @@ void Slider2D::update()
 	mValue.y = lmap<float>((*mLinkedValue).y, mMin.y, mMax.y, getBounds().getY2() - offset.y, getPosition().y + offset.y );
 }
 
-void Slider2D::handleMouseDown( const Vec2i &aMousePos )
+void Slider2D::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
 {
-	updatePosition( aMousePos );
+	if ( isRight )
+	{
+		(*mLinkedValue).x = mDefaultValue.x;
+		(*mLinkedValue).y = mDefaultValue.y;		
+	}
+	else updatePosition( aMousePos );
 }
 
 void Slider2D::handleMouseDrag( const Vec2i &aMousePos )

@@ -13,7 +13,7 @@ namespace MinimalUI {
 		void draw();
 		void update();
 		
-		void handleMouseDown( const ci::Vec2i &aMousePos );
+		void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
 		void handleMouseDrag( const ci::Vec2i &aMousePos );
 		void updatePosition( const int &aPos );
 		
@@ -40,7 +40,7 @@ namespace MinimalUI {
 		void draw();
 		void update();
 		
-		void handleMouseDown( const ci::Vec2i &aMousePos );
+		void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
 		void handleMouseDrag( const ci::Vec2i &aMousePos );
 		void updatePosition( const ci::Vec2i &aPos );
 		
@@ -51,6 +51,7 @@ namespace MinimalUI {
 		ci::Vec2i mScreenMax;
 		ci::Vec2f mValue;
 		ci::Vec2f *mLinkedValue;
+		ci::Vec2f mDefaultValue;
  
 		static int DEFAULT_HEIGHT;
 		static int DEFAULT_WIDTH;
