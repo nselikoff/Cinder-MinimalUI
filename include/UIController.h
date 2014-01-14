@@ -41,6 +41,7 @@ namespace MinimalUI {
 
 		UIElementRef addSlider( const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}" );
 		UIElementRef addSlider2D( const std::string &aName, ci::Vec2f *aValueToLink, const std::string &aParamString = "{}" );
+        UIElementRef addSliderCallback( const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString = "{}" );
 		UIElementRef addToggleSlider( const std::string &aSliderName, float *aValueToLink, const std::string &aButtonName, const std::function<void( bool )>& aEventHandler, const std::string &aSliderParamString = "{}", const std::string &aButtonParamString = "{}" );
 		UIElementRef addButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString = "{}" );
 		UIElementRef addLinkedButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, const std::string &aParamString = "{}" );
@@ -62,7 +63,10 @@ namespace MinimalUI {
 
 		ci::app::WindowRef getWindow() { return mWindow; }
 		ci::Vec2i getInsertPosition() { return mInsertPosition; }
+		
 		ci::Font getFont( const std::string &aStyle );
+		void setFont( const std::string &aStyle, const ci::Font &aFont );
+		
 		int getDepth() { return mDepth + mUIElements.size(); }
 		int getWidth() { return mWidth; }
 		ci::Vec2i getPosition() { return mPosition; }
@@ -97,5 +101,15 @@ namespace MinimalUI {
 		int mFboNumSamples;
 		ci::Anim<float> mAlpha;
 	};
-	
+
+	//! Exception for unknown
+	class FontStyleExc : public Exception {
+	public:
+		FontStyleExc( const std::string &aStyle ) { sprintf( mMessage, "Unknown font style: %s", aStyle.c_str() ); }
+		
+		virtual const char * what() const throw() { return mMessage; }
+		
+		char mMessage[4096];
+	};
+
 }
