@@ -138,13 +138,13 @@ void UIElement::drawLabel()
 	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, getBounds() );
 	
 	// lower right of the name texture
-	Vec2i texLR = toPixels( mNameTexture.getBounds().getLR() / 2 );
+	Vec2i texLR = mNameTexture.getBounds().getLR();
 	
 	// offset by the upper left of the bounds of the UIElement
 	Vec2i offset = getBounds().getUL();
 	
 	// vertically center the label
-	offset += Vec2i( 0, toPixels( ( mBounds.getHeight() - mNameTexture.getHeight() / 2 ) / 2 ) );
+	offset += Vec2i( 0, ( getBounds().getHeight() - mNameTexture.getHeight() ) / 2 );
 	
 	// draw the label
 	gl::draw( mNameTexture, Area( offset, offset + texLR ) );
