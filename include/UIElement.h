@@ -27,12 +27,14 @@ namespace MinimalUI {
 		
 		UIController* getParent() const { return mParent; }
 
-		ci::Vec2i getPosition() const { return mPosition; }
+		ci::Vec2i getPosition() const { return ci::app::toPixels( mPosition ); }
+		void setPosition( const ci::Vec2i &aPosition ) { mPosition = aPosition; }
 		
-		ci::Vec2i getSize() const { return mSize; }
+		ci::Vec2i getSize() const { return ci::app::toPixels( mSize ); }
 		void setSize( const ci::Vec2i &aSize ) { mSize = aSize; }
 		
-		ci::Area getBounds() const { return mBounds; }
+		ci::Area getBounds() const { return ci::app::toPixels( mBounds ); }
+		void setBounds( const ci::Area &aBounds ) { mBounds = aBounds; }
 		
 		bool hasParam( const std::string &aName ) const { return mParams.hasChild( aName ); }
 		template <class T>
@@ -71,6 +73,11 @@ namespace MinimalUI {
 		
 		static int DEFAULT_HEIGHT;
 
+	protected:
+		ci::Vec2i mPosition;
+		ci::Vec2i mSize;
+		ci::Area mBounds;
+		
 	private:
 		// disable copy and operator=
 		UIElement(const UIElement&);
@@ -83,9 +90,6 @@ namespace MinimalUI {
 		ci::signals::scoped_connection mCbMouseDown, mCbMouseUp, mCbMouseDrag;
 
 		UIController *mParent;
-		ci::Vec2i mPosition;
-		ci::Vec2i mSize;
-		ci::Area mBounds;
 		ci::JsonTree mParams;
 		std::string mName;
 		std::string mGroup;

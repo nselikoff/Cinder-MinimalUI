@@ -125,7 +125,7 @@ void UIElement::mouseDrag( MouseEvent &event )
 
 void UIElement::renderNameTexture()
 {
-	TextBox textBox = TextBox().size( Vec2i( mSize.x, TextBox::GROW ) ).font( mFont ).color( mNameColor ).alignment( mAlignment ).text( mName );
+	TextBox textBox = TextBox().size( Vec2i( toPixels( mSize.x ), TextBox::GROW ) ).font( mFont ).color( mNameColor ).alignment( mAlignment ).text( mName );
 	mNameTexture = textBox.render();
 }
 
@@ -133,10 +133,21 @@ void UIElement::drawLabel()
 {
 	gl::pushMatrices();
 	gl::color( Color::white() );
-	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, mBounds );
-	// intentional truncation
-	Vec2i offset = mBounds.getCenter() - mNameTexture.getSize() / 2;
-	gl::translate( offset );
-	gl::draw( mNameTexture );
+	
+	// draw the background texture if it's defined
+	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, getBounds() );
+	
+	// lower right of the name texture
+	Vec2i texLR = toPixels( mNameTexture.getBounds().getLR() / 2 );
+	
+	// offset by the upper left of the bounds of the UIElement
+	Vec2i offset = getBounds().getUL();
+	
+	// vertically center the label
+	offset += Vec2i( 0, toPixels( ( mBounds.getHeight() - mNameTexture.getHeight() / 2 ) / 2 ) );
+	
+	// draw the label
+	gl::draw( mNameTexture, Area( offset, offset + texLR ) );
+
 	gl::popMatrices();
 }

@@ -85,12 +85,12 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
 	mCbMouseDown = mWindow->getSignalMouseDown().connect( mDepth + 99, std::bind( &UIController::mouseDown, this, std::placeholders::_1 ) );
 
     // set default fonts
-	setFont( "label", Font( "Helvetica", 16 ) );
-	setFont( "smallLabel", Font( "Helvetica", 12 ) );
-	setFont( "icon", Font( "Helvetica", 22 ) );
-	setFont( "header", Font( "Helvetica", 48 ) );
-	setFont( "body", Font( "Garamond", 19 ) );
-	setFont( "footer", Font( "Garamond Italic", 14 ) );
+	setFont( "label", Font( "Helvetica", toPixels( 16 ) ) );
+	setFont( "smallLabel", Font( "Helvetica", toPixels( 12 ) ) );
+	setFont( "icon", Font( "Helvetica", toPixels( 22 ) ) );
+	setFont( "header", Font( "Helvetica", toPixels( 48 ) ) );
+	setFont( "body", Font( "Garamond", toPixels( 19 ) ) );
+	setFont( "footer", Font( "Garamond Italic", toPixels( 14 ) ) );
 
 	mInsertPosition = Vec2i( mMarginLarge, mMarginLarge );
 
@@ -137,19 +137,19 @@ void UIController::draw()
 	// start drawing to the Fbo
 	mFbo.bindFramebuffer();
 
-	gl::lineWidth( 2.0f );
+	gl::lineWidth( toPixels( 2.0f ) );
 	gl::enable( GL_LINE_SMOOTH );
 	gl::enableAlphaBlending();
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	// clear and set viewport and matrices
 	gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 0.0f ) );
-	gl::setViewport( mBounds + mPosition );
-	gl::setMatricesWindow( mBounds.getSize(), false);
+	gl::setViewport( toPixels( mBounds + mPosition ) );
+	gl::setMatricesWindow( toPixels( mBounds.getSize() ), false);
 
 	// draw backing panel
 	gl::color( mPanelColor );
-	gl::drawSolidRect( mBounds );
+	gl::drawSolidRect( toPixels( mBounds ) );
 
 	// draw elements
 	for (unsigned int i = 0; i < mUIElements.size(); i++) {
@@ -160,14 +160,14 @@ void UIController::draw()
 	mFbo.unbindFramebuffer();
 
 	// reset the matrices and blending
-	gl::setViewport( getWindow()->getBounds() );
-	gl::setMatricesWindow( getWindow()->getSize() );
+	gl::setViewport( toPixels( getWindow()->getBounds() ) );
+	gl::setMatricesWindow( toPixels( getWindow()->getSize() ) );
 	gl::enableAlphaBlending( true );
 
 	// if forcing interaction, draw an overlay over the whole window
 	if ( mForceInteraction ) {
 		gl::color(ColorA( 0.0f, 0.0f, 0.0f, 0.5f * mAlpha));
-		gl::drawSolidRect(getWindow()->getBounds());
+		gl::drawSolidRect( toPixels( getWindow()->getBounds() ) );
 	}
 
 	// draw the FBO to the screen
