@@ -125,7 +125,7 @@ void UIElement::mouseDrag( MouseEvent &event )
 
 void UIElement::renderNameTexture()
 {
-	TextBox textBox = TextBox().size( Vec2i( toPixels( mSize.x ), TextBox::GROW ) ).font( mFont ).color( mNameColor ).alignment( mAlignment ).text( mName );
+	TextBox textBox = TextBox().size( Vec2i( mSize.x * 2 , TextBox::GROW ) ).font( mFont ).color( mNameColor ).alignment( mAlignment ).text( mName );
 	mNameTexture = textBox.render();
 }
 
@@ -138,13 +138,13 @@ void UIElement::drawLabel()
 	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, getBounds() );
 	
 	// lower right of the name texture
-	Vec2i texLR = mNameTexture.getBounds().getLR();
+	Vec2i texLR = toPixels( mNameTexture.getBounds().getLR() / 2 );
 	
 	// offset by the upper left of the bounds of the UIElement
 	Vec2i offset = getBounds().getUL();
 	
 	// vertically center the label
-	offset += Vec2i( 0, ( getBounds().getHeight() - mNameTexture.getHeight() ) / 2 );
+	offset += Vec2i( 0, ( getBounds().getHeight() - toPixels( mNameTexture.getHeight() / 2 ) ) / 2 );
 	
 	// draw the label
 	gl::draw( mNameTexture, Area( offset, offset + texLR ) );

@@ -85,12 +85,12 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
 	mCbMouseDown = mWindow->getSignalMouseDown().connect( mDepth + 99, std::bind( &UIController::mouseDown, this, std::placeholders::_1 ) );
 
     // set default fonts
-	setFont( "label", Font( "Helvetica", toPixels( 16 ) ) );
-	setFont( "smallLabel", Font( "Helvetica", toPixels( 12 ) ) );
-	setFont( "icon", Font( "Helvetica", toPixels( 22 ) ) );
-	setFont( "header", Font( "Helvetica", toPixels( 48 ) ) );
-	setFont( "body", Font( "Garamond", toPixels( 19 ) ) );
-	setFont( "footer", Font( "Garamond Italic", toPixels( 14 ) ) );
+	setFont( "label", Font( "Helvetica", 16 * 2 ) );
+	setFont( "smallLabel", Font( "Helvetica", 12 * 2 ) );
+	setFont( "icon", Font( "Helvetica", 22 * 2 ) );
+	setFont( "header", Font( "Helvetica", 48 * 2 ) );
+	setFont( "body", Font( "Garamond", 19 * 2 ) );
+	setFont( "footer", Font( "Garamond Italic", 14 * 2 ) );
 
 	mInsertPosition = Vec2i( mMarginLarge, mMarginLarge );
 
