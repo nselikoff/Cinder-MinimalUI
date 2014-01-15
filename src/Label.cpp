@@ -17,14 +17,14 @@ Label::Label( UIController *aUIController, const string &aName, const string &aP
 	setSize( Vec2i( x, 0 ) );
 	renderNameTexture();
 	
-	// set actual size based on the height of the name texture
+	// set actual size based on the height of the name texture, divided by 2 because we render it twice as large for retina displays
 	int y;
 	if ( mNarrow ) {
-		y = math<float>::min( getNameTexture().getHeight(), UIElement::DEFAULT_HEIGHT );
+		y = math<float>::min( getNameTexture().getHeight() / 2, UIElement::DEFAULT_HEIGHT );
 	} else {
-		y = math<float>::max( getNameTexture().getHeight(), UIElement::DEFAULT_HEIGHT );
+		y = math<float>::max( getNameTexture().getHeight() / 2, UIElement::DEFAULT_HEIGHT );
 	}
-	setSize( Vec2i( getSize().x, y ) );
+	setSize( Vec2i( mSize.x, y ) );
 
 	// set position and bounds
 	setPositionAndBounds();
@@ -44,7 +44,7 @@ void Label::draw()
 void Label::setPositionAndBounds()
 {
 	mPosition = getParent()->getInsertPosition();
-	mBounds = Area( mPosition, mPosition + toPoints( mSize ) );
+	mBounds = Area( mPosition, mPosition + mSize );
 	
 	// offset the insert position
 	offsetInsertPosition();

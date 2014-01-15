@@ -102,7 +102,7 @@ void UIElement::mouseDown( MouseEvent &event )
 {
 	if ( mParent->isVisible() && !mLocked && mBounds.contains( event.getPos() - mParent->getPosition() ) ) {
 		mActive = true;
-		handleMouseDown( toPixels( event.getPos() ) - mParent->getPosition(), event.isRight() );
+		handleMouseDown( event.getPos() - mParent->getPosition(), event.isRight() );
 		event.setHandled();
 	}
 }
@@ -111,7 +111,7 @@ void UIElement::mouseUp( MouseEvent &event )
 {
 	if ( mParent->isVisible() && !mLocked && mActive ) {
 		mActive = false;
-		handleMouseUp( toPixels( event.getPos() ) - mParent->getPosition() );
+		handleMouseUp( event.getPos() - mParent->getPosition() );
 		//		event.setHandled(); // maybe?
 	}
 }
@@ -119,7 +119,7 @@ void UIElement::mouseUp( MouseEvent &event )
 void UIElement::mouseDrag( MouseEvent &event )
 {
 	if ( mParent->isVisible() && !mLocked && mActive ) {
-		handleMouseDrag( toPixels( event.getPos() ) - mParent->getPosition() );
+		handleMouseDrag( event.getPos() - mParent->getPosition() );
 	}
 }
 
@@ -133,10 +133,21 @@ void UIElement::drawLabel()
 {
 	gl::pushMatrices();
 	gl::color( Color::white() );
-	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, mBounds );
-	// intentional truncation
-	Vec2i offset = toPixels( mBounds.getCenter() ) - mNameTexture.getSize() / 2;
-	gl::translate( offset );
-	gl::draw( mNameTexture );
+	
+	// draw the background texture if it's defined
+	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, getBounds() );
+	
+	// lower right of the name texture
+	Vec2i texLR = toPixels( mNameTexture.getBounds().getLR() / 2 );
+	
+	// offset by the upper left of the bounds of the UIElement
+	Vec2i offset = getBounds().getUL();
+	
+	// vertically center the label
+	offset += Vec2i( 0, toPixels( ( mBounds.getHeight() - mNameTexture.getHeight() / 2 ) / 2 ) );
+	
+	// draw the label
+	gl::draw( mNameTexture, Area( offset, offset + texLR ) );
+
 	gl::popMatrices();
 }

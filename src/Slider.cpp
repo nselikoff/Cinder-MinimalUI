@@ -51,13 +51,13 @@ Slider::Slider( UIController *aUIController, const string &aName, float *aValueT
 	// set screen min and max
 	if ( mVertical )
 	{
-		mScreenMin = getPosition().y + toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH );
-		mScreenMax = getBounds().getY2() - toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH );
+		mScreenMin = mPosition.y + Slider::DEFAULT_HANDLE_HALFWIDTH;
+		mScreenMax = mBounds.getY2() - Slider::DEFAULT_HANDLE_HALFWIDTH;
 	}
 	else
 	{
-		mScreenMin = getPosition().x + toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH );
-		mScreenMax = getBounds().getX2() - toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH );
+		mScreenMin = mPosition.x + Slider::DEFAULT_HANDLE_HALFWIDTH;
+		mScreenMax = mBounds.getX2() - Slider::DEFAULT_HANDLE_HALFWIDTH;
 	}
 
 	// set screen value
@@ -75,7 +75,7 @@ void Slider::draw()
 	if ( isLocked() ) {
 		gl::color( UIController::DEFAULT_STROKE_COLOR );
 	} else {
-		gl::color( getBackgroundColor() );//Color::black() );
+		gl::color( getBackgroundColor() );
 	}
 	gl::drawSolidRect( getBounds() );
 
@@ -100,13 +100,13 @@ void Slider::draw()
 		Vec2f handleStart, handleEnd;
 		if ( mVertical )
 		{
-			handleStart = Vec2f( getBounds().getX1(), mValue - toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH ) );
-			handleEnd = Vec2f( getBounds().getX2(), mValue + toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH ) );
+			handleStart = Vec2f( getBounds().getX1(), toPixels( mValue - Slider::DEFAULT_HANDLE_HALFWIDTH ) );
+			handleEnd = Vec2f( getBounds().getX2(), toPixels( mValue + Slider::DEFAULT_HANDLE_HALFWIDTH ) );
 		}
 		else
 		{
-			handleStart = Vec2f( mValue - toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH ), getBounds().getY1() );
-			handleEnd = Vec2f( mValue + toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH ), getBounds().getY2() );
+			handleStart = Vec2f( toPixels( mValue - Slider::DEFAULT_HANDLE_HALFWIDTH ), getBounds().getY1() );
+			handleEnd = Vec2f( toPixels( mValue + Slider::DEFAULT_HANDLE_HALFWIDTH ), getBounds().getY2() );
 		}
 		gl::drawStrokedRect( Rectf( handleStart, handleEnd ) );
 		gl::drawSolidRect( Rectf( handleStart, handleEnd ) );
@@ -119,11 +119,11 @@ void Slider::update()
 {
 	if ( mVertical )
 	{
-		mValue = lmap<float>(*mLinkedValue, mMin, mMax, getBounds().getY2() - toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH ), getPosition().y + toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH ) );
+		mValue = lmap<float>(*mLinkedValue, mMin, mMax, mScreenMin, mScreenMax );
 	}
 	else
 	{
-		mValue = lmap<float>(*mLinkedValue, mMin, mMax, getPosition().x + toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH ), getBounds().getX2() - toPixels( Slider::DEFAULT_HANDLE_HALFWIDTH ) );
+		mValue = lmap<float>(*mLinkedValue, mMin, mMax, mScreenMin, mScreenMax );
 	}
 }
 
@@ -155,7 +155,7 @@ void Slider::handleMouseDrag( const Vec2i &aMousePos )
 	else
 	{
 		updatePosition( math<int>::clamp( aMousePos.x, mScreenMin, mScreenMax ) );
-	}	
+	}
 }
 
 void Slider::updatePosition( const int &aPos )
@@ -195,9 +195,9 @@ Slider2D::Slider2D( UIController *aUIController, const string &aName, Vec2f *aVa
 	setPositionAndBounds();
 
 	// set screen min and max
-	Vec2i offset = Vec2i( toPixels( Slider2D::DEFAULT_HANDLE_HALFWIDTH ), toPixels( Slider2D::DEFAULT_HANDLE_HALFWIDTH ) );
-	mScreenMin = getPosition() + offset;
-	mScreenMax = getBounds().getLR() - offset;
+	Vec2i offset = Vec2i( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
+	mScreenMin = mPosition + offset;
+	mScreenMax = mBounds.getLR() - offset;
 
 	// set screen value
 	update();
@@ -217,22 +217,22 @@ void Slider2D::draw()
 
 	// draw the indicator lines
 	gl::color( UIController::ACTIVE_STROKE_COLOR );
-	gl::drawLine( Vec2f( getBounds().getX1(), mValue.y ), Vec2f( getBounds().getX2(), mValue.y ) );
-	gl::drawLine( Vec2f( mValue.x, getBounds().getY1() ), Vec2f( mValue.x, getBounds().getY2() ) );
+	gl::drawLine( toPixels( Vec2f( mBounds.getX1(), mValue.y ) ), toPixels( Vec2f( mBounds.getX2(), mValue.y ) ) );
+	gl::drawLine( toPixels( Vec2f( mValue.x, mBounds.getY1() ) ), toPixels( Vec2f( mValue.x, mBounds.getY2() ) ) );
 
 	// draw the handle
-	Vec2f offset = Vec2i( toPixels( Slider2D::DEFAULT_HANDLE_HALFWIDTH ), toPixels( Slider2D::DEFAULT_HANDLE_HALFWIDTH ) );
-	Vec2f handleStart = mValue - offset;
-	Vec2f handleEnd = mValue + offset;
+	Vec2f offset = Vec2i( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
+	Vec2f handleStart = toPixels( mValue - offset );
+	Vec2f handleEnd = toPixels( mValue + offset );
 	gl::drawStrokedRect( Rectf( handleStart, handleEnd ) );
 	gl::drawSolidRect( Rectf( handleStart, handleEnd ) );
 }
 
 void Slider2D::update()
 {
-	Vec2i offset = Vec2i( toPixels( Slider2D::DEFAULT_HANDLE_HALFWIDTH ), toPixels( Slider2D::DEFAULT_HANDLE_HALFWIDTH ) );
-	mValue.x = lmap<float>((*mLinkedValue).x, mMin.x, mMax.x, getPosition().x + offset.x, getBounds().getX2() - offset.x );
-	mValue.y = lmap<float>((*mLinkedValue).y, mMin.y, mMax.y, getBounds().getY2() - offset.y, getPosition().y + offset.y );
+	Vec2i offset = Vec2i( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
+	mValue.x = lmap<float>((*mLinkedValue).x, mMin.x, mMax.x, mPosition.x + offset.x, mBounds.getX2() - offset.x );
+	mValue.y = lmap<float>((*mLinkedValue).y, mMin.y, mMax.y, mBounds.getY2() - offset.y, mPosition.y + offset.y );
 }
 
 void Slider2D::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
