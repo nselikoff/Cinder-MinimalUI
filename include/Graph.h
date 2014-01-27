@@ -18,7 +18,6 @@ namespace MinimalUI {
 		float mMax;
 		int mScreenMin;
 		int mScreenMax;
-		float mValue;
 		float *mLinkedValue;
 		vector<float> mBuffer;
 		int mBufferSize; 
@@ -27,7 +26,6 @@ namespace MinimalUI {
 
 		static int DEFAULT_HEIGHT;
 		static int DEFAULT_WIDTH;
-		static int DEFAULT_HANDLE_HALFWIDTH;
 	};
 
 }
