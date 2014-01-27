@@ -3,6 +3,7 @@
 #include "Slider.h"
 #include "Button.h"
 #include "Label.h"
+#include "Graph.h"
 
 using namespace MinimalUI;
 
@@ -259,6 +260,13 @@ UIElementRef UIController::addToggleSlider( const string &aSliderName, float *aV
 	// add the button to the controller
 	addElement( newButton );
 	return toggleSliderRef;
+}
+
+UIElementRef UIController::addMovingGraph( const string &aName, float *aValueToLink, const string &aParamString )
+{
+	UIElementRef movingGraphRef = MovingGraph::create( this, aName, aValueToLink, aParamString );
+	addElement( movingGraphRef );
+	return movingGraphRef;
 }
 
 void UIController::releaseGroup( const string &aGroup )
