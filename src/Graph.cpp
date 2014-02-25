@@ -19,7 +19,7 @@ MovingGraph::MovingGraph( UIController *aUIController, const string &aName, floa
 
 	// set size
 	int x = hasParam( "width" ) ? getParam<int>( "width" ) : MovingGraph::DEFAULT_WIDTH;
-	int y = MovingGraph::DEFAULT_HEIGHT;
+	int y = hasParam( "height" ) ? getParam<int>( "height" ) : MovingGraph::DEFAULT_HEIGHT;
 	setSize( Vec2i( x, y ) );
 
 	// set position and bounds
@@ -28,8 +28,8 @@ MovingGraph::MovingGraph( UIController *aUIController, const string &aName, floa
 	mScreenMax = mBounds.getX2();
 
 	mBufferSize = 128;
-	mScale = mBounds.getHeight() * 0.5f; 
-	mInc = mBounds.getWidth() / ( (float)mBufferSize - 1.0f );  
+	mScale = mBounds.getHeight() * 0.5f;
+	mInc = mBounds.getWidth() / ( (float)mBufferSize - 1.0f );
 
 	// set screen value
 	update();
@@ -49,17 +49,17 @@ void MovingGraph::draw()
 
 	// draw the graph
 	gl::color( UIController::ACTIVE_STROKE_COLOR );
-	ci::gl::pushMatrices();
-	ci::gl::translate( mBounds.getX1(), mBounds.getY1() + mScale );
+	gl::pushMatrices();
+	gl::translate( mBounds.getX1(), mBounds.getY1() + mScale );
 
 	mShape.clear();
-	mShape.moveTo( 0.0f, ci::lmap<float>( mBuffer[0], mMin, mMax, mScale, -mScale ) );
+	mShape.moveTo( 0.0f, lmap<float>( mBuffer[0], mMin, mMax, mScale, -mScale ) );
 	for (int i = 1; i < mBuffer.size(); i++)
 	{			
-		mShape.lineTo( mInc * (float)i, ci::lmap<float>( mBuffer[i], mMin, mMax, mScale, -mScale ) );
-	}             
-	ci::gl::draw( mShape );
-	ci::gl::popMatrices();   
+		mShape.lineTo( mInc * (float)i, lmap<float>( mBuffer[i], mMin, mMax, mScale, -mScale ) );
+	}
+	gl::draw( mShape );
+	gl::popMatrices();
 }
 
 void MovingGraph::update()
