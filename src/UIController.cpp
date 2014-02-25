@@ -134,6 +134,13 @@ void UIController::draw()
 {
 	if ( !mVisible )
 		return;
+    
+    // save state
+    gl::pushMatrices();
+    glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
+
+    // disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
+    gl::disableDepthRead();
 
 	// start drawing to the Fbo
 	mFbo.bindFramebuffer();
@@ -175,6 +182,10 @@ void UIController::draw()
 	gl::color( ColorA( mAlpha, mAlpha, mAlpha, mAlpha ) );
 	gl::draw( mFbo.getTexture() );
 	gl::disableAlphaBlending();
+    
+    // restore state
+    glPopAttrib();
+    gl::popMatrices();
 }
 
 void UIController::update()
