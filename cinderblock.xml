@@ -16,6 +16,8 @@
 	<header>include/Label.h</header>
 	<source>src/Slider.cpp</source>
 	<header>include/Slider.h</header>
+	<source>src/Graph.cpp</source>
+	<header>include/Graph.h</header>
 	<source>src/UIController.cpp</source>
 	<header>include/UIController.h</header>
 	<source>src/UIElement.cpp</source>
