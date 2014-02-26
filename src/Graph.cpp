@@ -1,3 +1,8 @@
+/*
+ Adapted from ciUI's Moving Graph by @brucelane with permission from @rezaali
+ https://github.com/rezaali/ciUI
+*/
+
 #include "Graph.h"
 
 using namespace ci;
