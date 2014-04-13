@@ -48,6 +48,9 @@ void Button::draw()
 	// draw the button background
 	gl::drawSolidRect( getBounds() );
 
+	// draw the background
+	drawBackground();
+
 	// set the color
 	if ( isActive() ) {
 		gl::color( UIController::ACTIVE_STROKE_COLOR );

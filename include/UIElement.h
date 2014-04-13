@@ -61,6 +61,7 @@ namespace MinimalUI {
 
 		ci::gl::Texture getNameTexture() const { return mNameTexture; }
 		void setNameTexture( const ci::gl::Texture &aTexture ) { mNameTexture = aTexture; }
+		void drawBackground();
 		void drawLabel();
 		
 		virtual void draw() = 0;

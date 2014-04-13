@@ -129,13 +129,24 @@ void UIElement::renderNameTexture()
 	mNameTexture = textBox.render();
 }
 
-void UIElement::drawLabel()
+void UIElement::drawBackground()
 {
 	gl::pushMatrices();
 	gl::color( Color::white() );
 	
 	// draw the background texture if it's defined
 	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, getBounds() );
+	
+	gl::popMatrices();
+}
+
+void UIElement::drawLabel()
+{
+	gl::pushMatrices();
+	gl::color( Color::white() );
+	
+	// draw the background texture if it's defined
+	//if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, getBounds() );
 	
 	// lower right of the name texture
 	Vec2i texLR = toPixels( mNameTexture.getBounds().getLR() / 2 );
