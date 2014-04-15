@@ -37,6 +37,9 @@ UIElementRef Label::create( UIController *aUIController, const string &aName, co
 
 void Label::draw()
 {
+	// draw the background
+	drawBackground();
+
 	// draw the label
 	drawLabel();
 }

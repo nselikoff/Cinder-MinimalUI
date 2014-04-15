@@ -79,6 +79,9 @@ void Slider::draw()
 	}
 	gl::drawSolidRect( getBounds() );
 
+	// draw the background
+	drawBackground();
+
 	// draw the outer rect
 	if ( isActive() ) {
 		gl::color( UIController::ACTIVE_STROKE_COLOR );
@@ -214,6 +217,8 @@ void Slider2D::draw()
 	gl::color( UIController::DEFAULT_STROKE_COLOR );
 	gl::drawStrokedRect( getBounds() );
 	gl::drawSolidRect( getBounds() );
+	// draw the background
+	drawBackground();
 
 	// draw the indicator lines
 	gl::color( UIController::ACTIVE_STROKE_COLOR );
