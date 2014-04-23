@@ -36,6 +36,7 @@ MovingGraph::MovingGraph( UIController *aUIController, const string &aName, floa
 	mScale = mBounds.getHeight() * 0.5f;
 	mInc = mBounds.getWidth() / ( (float)mBufferSize - 1.0f );
 
+	renderNameTexture();
 	// set screen value
 	update();
 }
@@ -65,6 +66,8 @@ void MovingGraph::draw()
 	}
 	gl::draw( mShape );
 	gl::popMatrices();
+	// draw the label
+	drawLabel();
 }
 
 void MovingGraph::update()
