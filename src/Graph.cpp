@@ -14,12 +14,18 @@ int MovingGraph::DEFAULT_HEIGHT = UIElement::DEFAULT_HEIGHT;
 int MovingGraph::DEFAULT_WIDTH = 96;
 
 // MovingGraph
-MovingGraph::MovingGraph( UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString )
+MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
 	: UIElement( aUIController, aName, aParamString )
 {
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
-	mMin = hasParam( "min" ) ? getParam<float>( "min" ) : 0.0f;
+	addEventHandler(aEventHandler);
+	mPressed = hasParam("pressed") ? getParam<bool>("pressed") : false;
+	mStateless = hasParam("stateless") ? getParam<bool>("stateless") : true;
+	mExclusive = hasParam("exclusive") ? getParam<bool>("exclusive") : false;
+	mCallbackOnRelease = hasParam("callbackOnRelease") ? getParam<bool>("callbackOnRelease") : true;
+	mContinuous = hasParam("continuous") ? getParam<bool>("continuous") : false;
+	mMin = hasParam("min") ? getParam<float>("min") : 0.0f;
 	mMax = hasParam( "max" ) ? getParam<float>( "max" ) : 1.0f;
 
 	// set size
@@ -41,9 +47,9 @@ MovingGraph::MovingGraph( UIController *aUIController, const string &aName, floa
 	update();
 }
 
-UIElementRef MovingGraph::create( UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString )
+UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
 {
-	return shared_ptr<MovingGraph>( new MovingGraph( aUIController, aName, aValueToLink, aParamString ) );
+	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aEventHandler, aParamString));
 }
 
 void MovingGraph::draw()
@@ -69,9 +75,61 @@ void MovingGraph::draw()
 	// draw the label
 	drawLabel();
 }
+void MovingGraph::release()
+{
+	if (mPressed) {
+		mPressed = false;
+		if (mCallbackOnRelease) {
+			callEventHandlers();
+		}
+	}
+}
+
+void MovingGraph::handleMouseUp(const Vec2i &aMousePos)
+{
+	if (mStateless) {
+		// mPressed should always be false if it's a stateless button; just call the handler
+		callEventHandlers();
+
+	}
+	else {
+		if (mPressed) {
+			// if the button is in an exclusive group and it's already pressed, don't do anything
+			if (!mExclusive) {
+				// release the button
+				mPressed = false;
+				callEventHandlers();
+			}
+		}
+		else {
+			// if the button is an exclusive group and isn't pressed, release all the buttons in the group first
+			if (mExclusive) {
+				getParent()->releaseGroup(getGroup());
+			}
+			// press the button
+			mPressed = true;
+			callEventHandlers();
+		}
+	}
+}
+
+void MovingGraph::addEventHandler(const std::function<void(bool)>& aEventHandler)
+{
+	mEventHandlers.push_back(aEventHandler);
+}
+
+void MovingGraph::callEventHandlers()
+{
+	for (int i = 0; i < mEventHandlers.size(); i++) {
+		mEventHandlers[i](mPressed);
+	}
+}
 
 void MovingGraph::update()
 {
+	if (mContinuous && mStateless && isActive()) {
+		callEventHandlers();
+	}	
 	mBuffer.push_back( *mLinkedValue );
 
 	if( mBuffer.size() >= mBufferSize )
