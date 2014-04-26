@@ -19,7 +19,7 @@ MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float
 {
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
-	addEventHandler(aEventHandler);
+	if (aEventHandler) addEventHandler(aEventHandler);
 	mPressed = hasParam("pressed") ? getParam<bool>("pressed") : false;
 	mStateless = hasParam("stateless") ? getParam<bool>("stateless") : true;
 	mExclusive = hasParam("exclusive") ? getParam<bool>("exclusive") : false;
@@ -54,11 +54,19 @@ UIElementRef MovingGraph::create(UIController *aUIController, const string &aNam
 
 void MovingGraph::draw()
 {
-	// draw the outer rect
-	gl::color( UIController::DEFAULT_STROKE_COLOR );
-	gl::drawStrokedRect( getBounds() );
-	gl::drawSolidRect( getBounds() );
+	// set the color
+	if (isActive()) {
+		gl::color(UIController::ACTIVE_STROKE_COLOR);
+	}
+	else if (mPressed) {
+		gl::color(UIController::DEFAULT_STROKE_COLOR);
+	}
+	else {
+		gl::color(getBackgroundColor());
+	}
 
+	// draw the button background
+	gl::drawSolidRect(getBounds());
 	// draw the graph
 	gl::color( UIController::ACTIVE_STROKE_COLOR );
 	gl::pushMatrices();
