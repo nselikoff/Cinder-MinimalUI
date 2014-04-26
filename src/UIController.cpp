@@ -5,6 +5,9 @@
 #include "Label.h"
 #include "Graph.h"
 
+using namespace ci;
+using namespace ci::app;
+using namespace std;
 using namespace MinimalUI;
 
 class FontStyleExc;

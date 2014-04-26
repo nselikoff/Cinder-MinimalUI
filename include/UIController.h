@@ -7,11 +7,6 @@
 #include "cinder/Timeline.h"
 #include <vector>
 
-using namespace ci;
-using namespace ci::app;
-using namespace std;
-
-
 namespace MinimalUI {
 	
 	class UIElement;
@@ -104,7 +99,7 @@ namespace MinimalUI {
 	};
 
 	//! Exception for unknown
-	class FontStyleExc : public Exception {
+	class FontStyleExc : public ci::Exception {
 	public:
 		FontStyleExc( const std::string &aStyle ) { sprintf( mMessage, "Unknown font style: %s", aStyle.c_str() ); }
 		
