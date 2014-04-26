@@ -12,8 +12,8 @@ namespace MinimalUI {
 
 	class MovingGraph : public UIElement {
 	public:
-		MovingGraph(UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const std::string &aParamString);
-		static UIElementRef create(UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const std::string &aParamString);
+		MovingGraph(UIController *aUIController, const std::string &aName, float *aValueToLink, const std::string &aParamString, const std::function<void(bool)>& aEventHandler);
+		static UIElementRef create(UIController *aUIController, const std::string &aName, float *aValueToLink, const std::string &aParamString, const std::function<void(bool)>& aEventHandler);
 
 		void draw();
 		void update();

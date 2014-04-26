@@ -14,7 +14,7 @@ int MovingGraph::DEFAULT_HEIGHT = UIElement::DEFAULT_HEIGHT;
 int MovingGraph::DEFAULT_WIDTH = 96;
 
 // MovingGraph
-MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString, const std::function<void(bool)>& aEventHandler)
 	: UIElement( aUIController, aName, aParamString )
 {
 	// initialize unique variables
@@ -47,9 +47,9 @@ MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float
 	update();
 }
 
-UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString, const std::function<void(bool)>& aEventHandler)
 {
-	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aEventHandler, aParamString));
+	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aParamString, aEventHandler));
 }
 
 void MovingGraph::draw()

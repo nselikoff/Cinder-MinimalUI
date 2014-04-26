@@ -46,7 +46,7 @@ namespace MinimalUI {
 		UIElementRef addButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString = "{}" );
 		UIElementRef addLinkedButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, const std::string &aParamString = "{}" );
 		UIElementRef addLabel( const std::string &aName, const std::string &aParamString = "{}" );
-		UIElementRef addMovingGraph(const std::string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const std::string &aParamString = "{}");
+		UIElementRef addMovingGraph(const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}", const std::function<void(bool)>& aEventHandler = NULL);
 		void addSeparator() { mInsertPosition.x = mMarginLarge; mInsertPosition.y += mMarginLarge; }
 		
 		void offsetInsertPosition( const ci::Vec2i &offset ) { mInsertPosition += offset; }
