@@ -46,8 +46,6 @@ namespace MinimalUI {
 		bool mExclusive;
 		bool mCallbackOnRelease;
 		bool mContinuous;
-		bool mButtonMode;
-
 	};
 
 }

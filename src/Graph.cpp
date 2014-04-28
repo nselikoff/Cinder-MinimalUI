@@ -21,7 +21,6 @@ MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
 	addEventHandler(aEventHandler);
-	mButtonMode = true;
 	mPressed = hasParam("pressed") ? getParam<bool>("pressed") : false;
 	mStateless = hasParam("stateless") ? getParam<bool>("stateless") : true;
 	mExclusive = hasParam("exclusive") ? getParam<bool>("exclusive") : false;
@@ -59,7 +58,6 @@ MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float
 {
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
-	mButtonMode = false;
 	mMin = hasParam("min") ? getParam<float>("min") : 0.0f;
 	mMax = hasParam("max") ? getParam<float>("max") : 1.0f;
 
@@ -90,29 +88,12 @@ UIElementRef MovingGraph::create(UIController *aUIController, const string &aNam
 
 void MovingGraph::draw()
 {
-	if (mButtonMode)
-	{
-		// set the color
-		if (isActive()) {
-			gl::color(UIController::ACTIVE_STROKE_COLOR);
-		}
-		else if (mPressed) {
-			gl::color(UIController::DEFAULT_STROKE_COLOR);
-		}
-		else {
-			gl::color(getBackgroundColor());
-		}
+	// draw the outer rect
+	gl::color(UIController::DEFAULT_STROKE_COLOR);
+	gl::drawStrokedRect(getBounds());
+	// draw the background
+	drawBackground();
 
-	}
-	else
-	{
-		// draw the outer rect
-		gl::color(UIController::DEFAULT_STROKE_COLOR);
-		gl::drawStrokedRect(getBounds());
-	}
-
-	// draw the button background
-	gl::drawSolidRect(getBounds());
 	// draw the graph
 	gl::color( UIController::ACTIVE_STROKE_COLOR );
 	gl::pushMatrices();
