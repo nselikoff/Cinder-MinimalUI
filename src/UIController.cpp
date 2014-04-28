@@ -273,6 +273,7 @@ UIElementRef UIController::addToggleSlider( const string &aSliderName, float *aV
 	return toggleSliderRef;
 }
 
+// without event handler
 UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLink, const string &aParamString)
 {
 	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aParamString);
@@ -280,7 +281,8 @@ UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLi
 	return movingGraphRef;
 }
 
-UIElementRef UIController::addMovingGraphButton(const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+// with event handler
+UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
 {
 	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aEventHandler, aParamString);
 	addElement(movingGraphRef);

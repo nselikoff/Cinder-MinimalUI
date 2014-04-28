@@ -13,77 +13,64 @@ using namespace MinimalUI;
 int MovingGraph::DEFAULT_HEIGHT = UIElement::DEFAULT_HEIGHT;
 int MovingGraph::DEFAULT_WIDTH = 96;
 
-// MovingGraph
-// with event handler
-MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
-	: UIElement(aUIController, aName, aParamString)
+// common initialization
+void MovingGraph::init()
 {
 	// initialize unique variables
-	mLinkedValue = aValueToLink;
+	mMin = hasParam("min") ? getParam<float>("min") : 0.0f;
+	mMax = hasParam("max") ? getParam<float>("max") : 1.0f;
+    
+	// set size
+	int x = hasParam("width") ? getParam<int>("width") : MovingGraph::DEFAULT_WIDTH;
+	int y = hasParam("height") ? getParam<int>("height") : MovingGraph::DEFAULT_HEIGHT;
+	setSize(Vec2i(x, y));
+    
+	// set position and bounds
+	setPositionAndBounds();
+	mScreenMin = mBounds.getX1();
+	mScreenMax = mBounds.getX2();
+    
+	mBufferSize = 128;
+	mScale = mBounds.getHeight() * 0.5f;
+	mInc = mBounds.getWidth() / ((float)mBufferSize - 1.0f);
+    
+	renderNameTexture();
+	// set screen value
+	update();
+}
+
+// without event handler
+MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
+: UIElement(aUIController, aName, aParamString), mLinkedValue(aValueToLink)
+{
+    init();
+}
+
+// with event handler
+MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+	: UIElement(aUIController, aName, aParamString), mLinkedValue(aValueToLink)
+{
+	// initialize unique variables
 	addEventHandler(aEventHandler);
 	mPressed = hasParam("pressed") ? getParam<bool>("pressed") : false;
 	mStateless = hasParam("stateless") ? getParam<bool>("stateless") : true;
 	mExclusive = hasParam("exclusive") ? getParam<bool>("exclusive") : false;
 	mCallbackOnRelease = hasParam("callbackOnRelease") ? getParam<bool>("callbackOnRelease") : true;
 	mContinuous = hasParam("continuous") ? getParam<bool>("continuous") : false;
-	mMin = hasParam("min") ? getParam<float>("min") : 0.0f;
-	mMax = hasParam("max") ? getParam<float>("max") : 1.0f;
 
-	// set size
-	int x = hasParam("width") ? getParam<int>("width") : MovingGraph::DEFAULT_WIDTH;
-	int y = hasParam("height") ? getParam<int>("height") : MovingGraph::DEFAULT_HEIGHT;
-	setSize(Vec2i(x, y));
-
-	// set position and bounds
-	setPositionAndBounds();
-	mScreenMin = mBounds.getX1();
-	mScreenMax = mBounds.getX2();
-
-	mBufferSize = 128;
-	mScale = mBounds.getHeight() * 0.5f;
-	mInc = mBounds.getWidth() / ((float)mBufferSize - 1.0f);
-
-	renderNameTexture();
-	// set screen value
-	update();
+    init();
 }
 
-UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
-{
-	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aEventHandler, aParamString));
-}
 // without event handler
-MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
-	: UIElement(aUIController, aName, aParamString)
-{
-	// initialize unique variables
-	mLinkedValue = aValueToLink;
-	mMin = hasParam("min") ? getParam<float>("min") : 0.0f;
-	mMax = hasParam("max") ? getParam<float>("max") : 1.0f;
-
-	// set size
-	int x = hasParam("width") ? getParam<int>("width") : MovingGraph::DEFAULT_WIDTH;
-	int y = hasParam("height") ? getParam<int>("height") : MovingGraph::DEFAULT_HEIGHT;
-	setSize(Vec2i(x, y));
-
-	// set position and bounds
-	setPositionAndBounds();
-	mScreenMin = mBounds.getX1();
-	mScreenMax = mBounds.getX2();
-
-	mBufferSize = 128;
-	mScale = mBounds.getHeight() * 0.5f;
-	mInc = mBounds.getWidth() / ((float)mBufferSize - 1.0f);
-
-	renderNameTexture();
-	// set screen value
-	update();
-}
-
-
 UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
 {
 	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aParamString));
+}
+
+// with event handler
+UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+{
+	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aEventHandler, aParamString));
 }
 
 void MovingGraph::draw()
