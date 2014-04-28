@@ -282,7 +282,8 @@ UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLi
 }
 
 // with event handler
-UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+// note: this would be an overloaded addMovingGraph function for consistency, were it not for a visual studio compiler defect (see http://cplusplus.github.io/LWG/lwg-active.html#2132)
+UIElementRef UIController::addMovingGraphButton(const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
 {
 	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aEventHandler, aParamString);
 	addElement(movingGraphRef);
