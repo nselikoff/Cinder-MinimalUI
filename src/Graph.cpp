@@ -14,24 +14,26 @@ int MovingGraph::DEFAULT_HEIGHT = UIElement::DEFAULT_HEIGHT;
 int MovingGraph::DEFAULT_WIDTH = 96;
 
 // MovingGraph
-MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString, const std::function<void(bool)>& aEventHandler)
-	: UIElement( aUIController, aName, aParamString )
+// with event handler
+MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+	: UIElement(aUIController, aName, aParamString)
 {
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
-	if (aEventHandler) addEventHandler(aEventHandler);
+	addEventHandler(aEventHandler);
+	mButtonMode = true;
 	mPressed = hasParam("pressed") ? getParam<bool>("pressed") : false;
 	mStateless = hasParam("stateless") ? getParam<bool>("stateless") : true;
 	mExclusive = hasParam("exclusive") ? getParam<bool>("exclusive") : false;
 	mCallbackOnRelease = hasParam("callbackOnRelease") ? getParam<bool>("callbackOnRelease") : true;
 	mContinuous = hasParam("continuous") ? getParam<bool>("continuous") : false;
 	mMin = hasParam("min") ? getParam<float>("min") : 0.0f;
-	mMax = hasParam( "max" ) ? getParam<float>( "max" ) : 1.0f;
+	mMax = hasParam("max") ? getParam<float>("max") : 1.0f;
 
 	// set size
-	int x = hasParam( "width" ) ? getParam<int>( "width" ) : MovingGraph::DEFAULT_WIDTH;
-	int y = hasParam( "height" ) ? getParam<int>( "height" ) : MovingGraph::DEFAULT_HEIGHT;
-	setSize( Vec2i( x, y ) );
+	int x = hasParam("width") ? getParam<int>("width") : MovingGraph::DEFAULT_WIDTH;
+	int y = hasParam("height") ? getParam<int>("height") : MovingGraph::DEFAULT_HEIGHT;
+	setSize(Vec2i(x, y));
 
 	// set position and bounds
 	setPositionAndBounds();
@@ -40,29 +42,73 @@ MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float
 
 	mBufferSize = 128;
 	mScale = mBounds.getHeight() * 0.5f;
-	mInc = mBounds.getWidth() / ( (float)mBufferSize - 1.0f );
+	mInc = mBounds.getWidth() / ((float)mBufferSize - 1.0f);
 
 	renderNameTexture();
 	// set screen value
 	update();
 }
 
-UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString, const std::function<void(bool)>& aEventHandler)
+UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
 {
-	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aParamString, aEventHandler));
+	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aEventHandler, aParamString));
+}
+// without event handler
+MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
+	: UIElement(aUIController, aName, aParamString)
+{
+	// initialize unique variables
+	mLinkedValue = aValueToLink;
+	mButtonMode = false;
+	mMin = hasParam("min") ? getParam<float>("min") : 0.0f;
+	mMax = hasParam("max") ? getParam<float>("max") : 1.0f;
+
+	// set size
+	int x = hasParam("width") ? getParam<int>("width") : MovingGraph::DEFAULT_WIDTH;
+	int y = hasParam("height") ? getParam<int>("height") : MovingGraph::DEFAULT_HEIGHT;
+	setSize(Vec2i(x, y));
+
+	// set position and bounds
+	setPositionAndBounds();
+	mScreenMin = mBounds.getX1();
+	mScreenMax = mBounds.getX2();
+
+	mBufferSize = 128;
+	mScale = mBounds.getHeight() * 0.5f;
+	mInc = mBounds.getWidth() / ((float)mBufferSize - 1.0f);
+
+	renderNameTexture();
+	// set screen value
+	update();
+}
+
+
+UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
+{
+	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aParamString));
 }
 
 void MovingGraph::draw()
 {
-	// set the color
-	if (isActive()) {
-		gl::color(UIController::ACTIVE_STROKE_COLOR);
+	if (mButtonMode)
+	{
+		// set the color
+		if (isActive()) {
+			gl::color(UIController::ACTIVE_STROKE_COLOR);
+		}
+		else if (mPressed) {
+			gl::color(UIController::DEFAULT_STROKE_COLOR);
+		}
+		else {
+			gl::color(getBackgroundColor());
+		}
+
 	}
-	else if (mPressed) {
+	else
+	{
+		// draw the outer rect
 		gl::color(UIController::DEFAULT_STROKE_COLOR);
-	}
-	else {
-		gl::color(getBackgroundColor());
+		gl::drawStrokedRect(getBounds());
 	}
 
 	// draw the button background

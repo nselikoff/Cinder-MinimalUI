@@ -273,14 +273,21 @@ UIElementRef UIController::addToggleSlider( const string &aSliderName, float *aV
 	return toggleSliderRef;
 }
 
-UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLink, const string &aParamString, const std::function<void(bool)>& aEventHandler)
+UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLink, const string &aParamString)
 {
-	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aParamString, aEventHandler);
-	addElement( movingGraphRef );
+	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aParamString);
+	addElement(movingGraphRef);
 	return movingGraphRef;
 }
 
-void UIController::releaseGroup( const string &aGroup )
+UIElementRef UIController::addMovingGraphButton(const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+{
+	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aEventHandler, aParamString);
+	addElement(movingGraphRef);
+	return movingGraphRef;
+}
+
+void UIController::releaseGroup(const string &aGroup)
 {
 	for (unsigned int i = 0; i < mUIElements.size(); i++) {
 		if (mUIElements[i]->getGroup() == aGroup ) {
