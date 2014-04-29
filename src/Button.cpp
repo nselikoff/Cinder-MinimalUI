@@ -65,6 +65,14 @@ void Button::draw()
 	drawLabel();
 }
 
+void Button::press()
+{
+    if ( !mPressed ) {
+        mPressed = true;
+        callEventHandlers();
+    }
+}
+
 void Button::release()
 {	
 	if ( mPressed ) {

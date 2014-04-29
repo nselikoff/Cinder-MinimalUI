@@ -292,6 +292,37 @@ void UIController::releaseGroup( const string &aGroup )
 	}
 }
 
+void UIController::selectGroupElementByName(const std::string &aGroup, const std::string &aName)
+{
+	for (unsigned int i = 0; i < mUIElements.size(); i++) {
+		if ( mUIElements[i]->getGroup() == aGroup ) {
+            if ( mUIElements[i]->getName() == aName ) {
+                mUIElements[i]->press();
+            } else {
+                mUIElements[i]->release();
+            }
+		}
+	}
+}
+
+void UIController::setLockedByGroup( const std::string &aGroup, const bool &locked )
+{
+	for (unsigned int i = 0; i < mUIElements.size(); i++) {
+		if (mUIElements[i]->getGroup() == aGroup ) {
+			mUIElements[i]->setLocked( locked );
+		}
+	}
+}
+
+void UIController::setPressedByGroup( const std::string &aGroup, const bool &pressed )
+{
+	for (unsigned int i = 0; i < mUIElements.size(); i++) {
+		if (mUIElements[i]->getGroup() == aGroup ) {
+            pressed ? mUIElements[i]->press() : mUIElements[i]->release();
+		}
+	}
+}
+
 Font UIController::getFont( const string &aStyle )
 {
 	if ( aStyle == "label" ) {

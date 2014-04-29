@@ -56,6 +56,9 @@ namespace MinimalUI {
 		bool isVisible() { return mVisible; }
 		
 		void releaseGroup( const std::string &aGroup );
+		void selectGroupElementByName( const std::string &aGroup, const std::string &aName );
+		void setLockedByGroup( const std::string &aGroup, const bool &locked );
+		void setPressedByGroup( const std::string &aGroup, const bool &pressed );
 
 		ci::app::WindowRef getWindow() { return mWindow; }
 		ci::Vec2i getInsertPosition() { return mInsertPosition; }
