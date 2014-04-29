@@ -75,8 +75,17 @@ UIElementRef MovingGraph::create(UIController *aUIController, const string &aNam
 
 void MovingGraph::draw()
 {
+	// set the color
+	if (isActive()) {
+		gl::color(UIController::ACTIVE_STROKE_COLOR);
+	}
+	else if (mPressed) {
+		gl::color(UIController::DEFAULT_STROKE_COLOR);
+	}
+	else {
+		gl::color(getBackgroundColor());
+	}
 	// draw the outer rect
-	gl::color(UIController::DEFAULT_STROKE_COLOR);
 	gl::drawStrokedRect(getBounds());
 	// draw the background
 	drawBackground();
