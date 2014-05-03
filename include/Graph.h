@@ -21,6 +21,7 @@ namespace MinimalUI {
         void init();
 		void draw();
 		void update();
+        void press();
 		void release();
 		void handleMouseUp(const ci::Vec2i &aMousePos);
 		void addEventHandler(const std::function<void(bool)>& aEventHandler);
@@ -35,13 +36,9 @@ namespace MinimalUI {
 		int mScreenMax;
 		float *mLinkedValue;
 		std::vector<float> mBuffer;
-		int mBufferSize; 
-<<<<<<< HEAD
-		ci::Shape2d mShape;
-=======
+		int mBufferSize;
         ci::Shape2d mShape;
->>>>>>> master
-		float mScale, mInc; 
+		float mScale, mInc;
 
 		static int DEFAULT_HEIGHT;
 		static int DEFAULT_WIDTH;

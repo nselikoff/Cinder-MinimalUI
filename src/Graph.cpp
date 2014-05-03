@@ -117,6 +117,15 @@ void MovingGraph::draw()
 	// draw the label
 	drawLabel();
 }
+
+void MovingGraph::press()
+{
+	if ( !mPressed ) {
+		mPressed = true;
+        callEventHandlers();
+	}
+}
+
 void MovingGraph::release()
 {
 	if (mPressed) {
