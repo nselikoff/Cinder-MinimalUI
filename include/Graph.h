@@ -14,14 +14,14 @@ namespace MinimalUI {
 	public:
 		MovingGraph(UIController *aUIController, const std::string &aName, float *aValueToLink, const std::string &aParamString);
 		MovingGraph(UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const std::string &aParamString);
-        
+
 		static UIElementRef create(UIController *aUIController, const std::string &aName, float *aValueToLink, const std::string &aParamString);
 		static UIElementRef create(UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const std::string &aParamString);
 
-        void init();
+		void init();
 		void draw();
 		void update();
-        void press();
+		void press();
 		void release();
 		void handleMouseUp(const ci::Vec2i &aMousePos);
 		void addEventHandler(const std::function<void(bool)>& aEventHandler);
@@ -37,7 +37,7 @@ namespace MinimalUI {
 		float *mLinkedValue;
 		std::vector<float> mBuffer;
 		int mBufferSize;
-        ci::Shape2d mShape;
+		ci::Shape2d mShape;
 		float mScale, mInc;
 
 		static int DEFAULT_HEIGHT;

@@ -29,16 +29,16 @@ void MovingGraph::init()
 	int x = hasParam("width") ? getParam<int>("width") : MovingGraph::DEFAULT_WIDTH;
 	int y = hasParam("height") ? getParam<int>("height") : MovingGraph::DEFAULT_HEIGHT;
 	setSize(Vec2i(x, y));
-    
+	
 	// set position and bounds
 	setPositionAndBounds();
 	mScreenMin = mBounds.getX1();
 	mScreenMax = mBounds.getX2();
-    
+	
 	mBufferSize = 128;
 	mScale = mBounds.getHeight() * 0.5f;
 	mInc = mBounds.getWidth() / ((float)mBufferSize - 1.0f);
-    
+	
 	renderNameTexture();
 	// set screen value
 	update();
@@ -48,7 +48,7 @@ void MovingGraph::init()
 MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
 : UIElement(aUIController, aName, aParamString), mLinkedValue(aValueToLink)
 {
-    init();
+	init();
 }
 
 // with event handler
@@ -58,7 +58,7 @@ MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float
 	// initialize unique variables
 	addEventHandler(aEventHandler);
 
-    init();
+	init();
 }
 
 // without event handler
@@ -122,7 +122,7 @@ void MovingGraph::press()
 {
 	if ( !mPressed ) {
 		mPressed = true;
-        callEventHandlers();
+		callEventHandlers();
 	}
 }
 
@@ -138,9 +138,9 @@ void MovingGraph::release()
 
 void MovingGraph::handleMouseUp(const Vec2i &aMousePos)
 {
-    if ( mEventHandlers.size() == 0 )
-        return;
-    
+	if ( mEventHandlers.size() == 0 )
+		return;
+	
 	if (mStateless) {
 		// mPressed should always be false if it's a stateless button; just call the handler
 		callEventHandlers();

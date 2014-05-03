@@ -269,30 +269,30 @@ void Slider2D::updatePosition( const Vec2i &aPos )
 SliderCallback::SliderCallback( UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const string &aParamString )
 : Slider( aUIController, aName, aValueToLink, aParamString )
 {
-    // initialize unique variables
-    addEventHandler( aEventHandler );
+	// initialize unique variables
+	addEventHandler( aEventHandler );
 }
 
 UIElementRef SliderCallback::create( UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const string &aParamString )
 {
-    return shared_ptr<SliderCallback>( new SliderCallback( aUIController, aName, aValueToLink, aEventHandler, aParamString ) );
+	return shared_ptr<SliderCallback>( new SliderCallback( aUIController, aName, aValueToLink, aEventHandler, aParamString ) );
 }
 
 void SliderCallback::addEventHandler( const std::function<void()>& aEventHandler )
 {
-    mEventHandlers.push_back( aEventHandler );
+	mEventHandlers.push_back( aEventHandler );
 }
 
 void SliderCallback::callEventHandlers()
 {
-    for (int i = 0; i < mEventHandlers.size(); i++ ) {
-        mEventHandlers[i]();
-    }
+	for (int i = 0; i < mEventHandlers.size(); i++ ) {
+		mEventHandlers[i]();
+	}
 }
 
 void SliderCallback::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
 {
-    callEventHandlers();
+	callEventHandlers();
 
 	if ( isRight )
 	{

@@ -60,16 +60,16 @@ namespace MinimalUI {
 	};
 
 	class SliderCallback : public Slider {
-    public:
-        SliderCallback( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
-        static UIElementRef create( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
-        
-        void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
-        
-        void addEventHandler( const std::function<void()>& aEventHandler );
-        void callEventHandlers();
-        
-    private:
-        std::vector< std::function<void()> > mEventHandlers;
-    };
+	public:
+		SliderCallback( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
+		static UIElementRef create( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
+		
+		void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
+		
+		void addEventHandler( const std::function<void()>& aEventHandler );
+		void callEventHandlers();
+		
+	private:
+		std::vector< std::function<void()> > mEventHandlers;
+	};
 }

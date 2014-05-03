@@ -36,7 +36,7 @@ namespace MinimalUI {
 
 		UIElementRef addSlider( const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}" );
 		UIElementRef addSlider2D( const std::string &aName, ci::Vec2f *aValueToLink, const std::string &aParamString = "{}" );
-        UIElementRef addSliderCallback( const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString = "{}" );
+		UIElementRef addSliderCallback( const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString = "{}" );
 		UIElementRef addToggleSlider( const std::string &aSliderName, float *aValueToLink, const std::string &aButtonName, const std::function<void( bool )>& aEventHandler, const std::string &aSliderParamString = "{}", const std::string &aButtonParamString = "{}" );
 		UIElementRef addButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString = "{}" );
 		UIElementRef addLinkedButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, const std::string &aParamString = "{}" );
