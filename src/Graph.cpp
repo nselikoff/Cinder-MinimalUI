@@ -19,7 +19,12 @@ void MovingGraph::init()
 	// initialize unique variables
 	mMin = hasParam("min") ? getParam<float>("min") : 0.0f;
 	mMax = hasParam("max") ? getParam<float>("max") : 1.0f;
-    
+	mPressed = hasParam("pressed") ? getParam<bool>("pressed") : false;
+	mStateless = hasParam("stateless") ? getParam<bool>("stateless") : true;
+	mExclusive = hasParam("exclusive") ? getParam<bool>("exclusive") : false;
+	mCallbackOnRelease = hasParam("callbackOnRelease") ? getParam<bool>("callbackOnRelease") : true;
+	mContinuous = hasParam("continuous") ? getParam<bool>("continuous") : false;
+
 	// set size
 	int x = hasParam("width") ? getParam<int>("width") : MovingGraph::DEFAULT_WIDTH;
 	int y = hasParam("height") ? getParam<int>("height") : MovingGraph::DEFAULT_HEIGHT;
@@ -52,11 +57,6 @@ MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float
 {
 	// initialize unique variables
 	addEventHandler(aEventHandler);
-	mPressed = hasParam("pressed") ? getParam<bool>("pressed") : false;
-	mStateless = hasParam("stateless") ? getParam<bool>("stateless") : true;
-	mExclusive = hasParam("exclusive") ? getParam<bool>("exclusive") : false;
-	mCallbackOnRelease = hasParam("callbackOnRelease") ? getParam<bool>("callbackOnRelease") : true;
-	mContinuous = hasParam("continuous") ? getParam<bool>("continuous") : false;
 
     init();
 }
@@ -85,16 +85,27 @@ void MovingGraph::draw()
 	else {
 		gl::color(getBackgroundColor());
 	}
-	// draw the outer rect
-	gl::drawStrokedRect(getBounds());
+	// draw the button background
+	gl::drawSolidRect(getBounds());
+
 	// draw the background
 	drawBackground();
 
 	// draw the graph
-	gl::color( UIController::ACTIVE_STROKE_COLOR );
+	if (isActive()) {
+		gl::color(UIController::ACTIVE_STROKE_COLOR);
+	}
+	else {
+		gl::color(UIController::DEFAULT_STROKE_COLOR);
+	}
+	// draw the outer rect
+	gl::drawStrokedRect(getBounds());
+
 	gl::pushMatrices();
 	gl::translate( mBounds.getX1(), mBounds.getY1() + mScale );
 
+	// active color for moving graph
+	gl::color(UIController::ACTIVE_STROKE_COLOR);
 	mShape.clear();
 	mShape.moveTo( 0.0f, lmap<float>( mBuffer[0], mMin, mMax, mScale, -mScale ) );
 	for (int i = 1; i < mBuffer.size(); i++)
