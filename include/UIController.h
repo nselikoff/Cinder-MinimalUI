@@ -7,11 +7,6 @@
 #include "cinder/Timeline.h"
 #include <vector>
 
-using namespace ci;
-using namespace ci::app;
-using namespace std;
-
-
 namespace MinimalUI {
 	
 	class UIElement;
@@ -62,6 +57,9 @@ namespace MinimalUI {
 		bool isVisible() { return mVisible; }
 		
 		void releaseGroup( const std::string &aGroup );
+		void selectGroupElementByName( const std::string &aGroup, const std::string &aName );
+		void setLockedByGroup( const std::string &aGroup, const bool &locked );
+		void setPressedByGroup( const std::string &aGroup, const bool &pressed );
 
 		ci::app::WindowRef getWindow() { return mWindow; }
 		ci::Vec2i getInsertPosition() { return mInsertPosition; }
@@ -105,7 +103,7 @@ namespace MinimalUI {
 	};
 
 	//! Exception for unknown
-	class FontStyleExc : public Exception {
+	class FontStyleExc : public ci::Exception {
 	public:
 		FontStyleExc( const std::string &aStyle ) { sprintf( mMessage, "Unknown font style: %s", aStyle.c_str() ); }
 		

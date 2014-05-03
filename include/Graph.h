@@ -34,9 +34,9 @@ namespace MinimalUI {
 		int mScreenMin;
 		int mScreenMax;
 		float *mLinkedValue;
-		vector<float> mBuffer;
+		std::vector<float> mBuffer;
 		int mBufferSize; 
-		Shape2d mShape;
+		ci::Shape2d mShape;
 		float mScale, mInc; 
 
 		static int DEFAULT_HEIGHT;
