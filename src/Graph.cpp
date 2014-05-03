@@ -76,7 +76,7 @@ UIElementRef MovingGraph::create(UIController *aUIController, const string &aNam
 void MovingGraph::draw()
 {
 	// set the color
-	if (isActive()) {
+	if ( isActive() && mEventHandlers.size() > 0 ) {
 		gl::color(UIController::ACTIVE_STROKE_COLOR);
 	}
 	else if (mPressed) {
@@ -92,7 +92,7 @@ void MovingGraph::draw()
 	drawBackground();
 
 	// draw the graph
-	if (isActive()) {
+	if ( isActive() && mEventHandlers.size() > 0 ) {
 		gl::color(UIController::ACTIVE_STROKE_COLOR);
 	}
 	else {
@@ -129,6 +129,9 @@ void MovingGraph::release()
 
 void MovingGraph::handleMouseUp(const Vec2i &aMousePos)
 {
+    if ( mEventHandlers.size() == 0 )
+        return;
+    
 	if (mStateless) {
 		// mPressed should always be false if it's a stateless button; just call the handler
 		callEventHandlers();
