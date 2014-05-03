@@ -36,7 +36,11 @@ namespace MinimalUI {
 		float *mLinkedValue;
 		std::vector<float> mBuffer;
 		int mBufferSize; 
+<<<<<<< HEAD
 		ci::Shape2d mShape;
+=======
+        ci::Shape2d mShape;
+>>>>>>> master
 		float mScale, mInc; 
 
 		static int DEFAULT_HEIGHT;
