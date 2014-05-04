@@ -13,50 +13,99 @@ using namespace MinimalUI;
 int MovingGraph::DEFAULT_HEIGHT = UIElement::DEFAULT_HEIGHT;
 int MovingGraph::DEFAULT_WIDTH = 96;
 
-// MovingGraph
-MovingGraph::MovingGraph( UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString )
-	: UIElement( aUIController, aName, aParamString )
+// common initialization
+void MovingGraph::init()
 {
 	// initialize unique variables
-	mLinkedValue = aValueToLink;
-	mMin = hasParam( "min" ) ? getParam<float>( "min" ) : 0.0f;
-	mMax = hasParam( "max" ) ? getParam<float>( "max" ) : 1.0f;
+	mMin = hasParam("min") ? getParam<float>("min") : 0.0f;
+	mMax = hasParam("max") ? getParam<float>("max") : 1.0f;
+	mPressed = hasParam("pressed") ? getParam<bool>("pressed") : false;
+	mStateless = hasParam("stateless") ? getParam<bool>("stateless") : true;
+	mExclusive = hasParam("exclusive") ? getParam<bool>("exclusive") : false;
+	mCallbackOnRelease = hasParam("callbackOnRelease") ? getParam<bool>("callbackOnRelease") : true;
+	mContinuous = hasParam("continuous") ? getParam<bool>("continuous") : false;
 
 	// set size
-	int x = hasParam( "width" ) ? getParam<int>( "width" ) : MovingGraph::DEFAULT_WIDTH;
-	int y = hasParam( "height" ) ? getParam<int>( "height" ) : MovingGraph::DEFAULT_HEIGHT;
-	setSize( Vec2i( x, y ) );
-
+	int x = hasParam("width") ? getParam<int>("width") : MovingGraph::DEFAULT_WIDTH;
+	int y = hasParam("height") ? getParam<int>("height") : MovingGraph::DEFAULT_HEIGHT;
+	setSize(Vec2i(x, y));
+	
 	// set position and bounds
 	setPositionAndBounds();
 	mScreenMin = mBounds.getX1();
 	mScreenMax = mBounds.getX2();
-
+	
 	mBufferSize = 128;
 	mScale = mBounds.getHeight() * 0.5f;
-	mInc = mBounds.getWidth() / ( (float)mBufferSize - 1.0f );
-
+	mInc = mBounds.getWidth() / ((float)mBufferSize - 1.0f);
+	
+	renderNameTexture();
 	// set screen value
 	update();
 }
 
-UIElementRef MovingGraph::create( UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString )
+// without event handler
+MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
+: UIElement(aUIController, aName, aParamString), mLinkedValue(aValueToLink)
 {
-	return shared_ptr<MovingGraph>( new MovingGraph( aUIController, aName, aValueToLink, aParamString ) );
+	init();
+}
+
+// with event handler
+MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+	: UIElement(aUIController, aName, aParamString), mLinkedValue(aValueToLink)
+{
+	// initialize unique variables
+	addEventHandler(aEventHandler);
+
+	init();
+}
+
+// without event handler
+UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
+{
+	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aParamString));
+}
+
+// with event handler
+UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+{
+	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aEventHandler, aParamString));
 }
 
 void MovingGraph::draw()
 {
-	// draw the outer rect
-	gl::color( UIController::DEFAULT_STROKE_COLOR );
-	gl::drawStrokedRect( getBounds() );
-	gl::drawSolidRect( getBounds() );
+	// set the color
+	if ( isActive() && mEventHandlers.size() > 0 ) {
+		gl::color(UIController::ACTIVE_STROKE_COLOR);
+	}
+	else if (mPressed) {
+		gl::color(UIController::DEFAULT_STROKE_COLOR);
+	}
+	else {
+		gl::color(getBackgroundColor());
+	}
+	// draw the button background
+	gl::drawSolidRect(getBounds());
+
+	// draw the background
+	drawBackground();
 
 	// draw the graph
-	gl::color( UIController::ACTIVE_STROKE_COLOR );
+	if ( isActive() && mEventHandlers.size() > 0 ) {
+		gl::color(UIController::ACTIVE_STROKE_COLOR);
+	}
+	else {
+		gl::color(UIController::DEFAULT_STROKE_COLOR);
+	}
+	// draw the outer rect
+	gl::drawStrokedRect(getBounds());
+
 	gl::pushMatrices();
 	gl::translate( mBounds.getX1(), mBounds.getY1() + mScale );
 
+	// active color for moving graph
+	gl::color(UIController::ACTIVE_STROKE_COLOR);
 	mShape.clear();
 	mShape.moveTo( 0.0f, lmap<float>( mBuffer[0], mMin, mMax, mScale, -mScale ) );
 	for (int i = 1; i < mBuffer.size(); i++)
@@ -65,10 +114,76 @@ void MovingGraph::draw()
 	}
 	gl::draw( mShape );
 	gl::popMatrices();
+	// draw the label
+	drawLabel();
+}
+
+void MovingGraph::press()
+{
+	if ( !mPressed ) {
+		mPressed = true;
+		callEventHandlers();
+	}
+}
+
+void MovingGraph::release()
+{
+	if (mPressed) {
+		mPressed = false;
+		if (mCallbackOnRelease) {
+			callEventHandlers();
+		}
+	}
+}
+
+void MovingGraph::handleMouseUp(const Vec2i &aMousePos)
+{
+	if ( mEventHandlers.size() == 0 )
+		return;
+	
+	if (mStateless) {
+		// mPressed should always be false if it's a stateless button; just call the handler
+		callEventHandlers();
+
+	}
+	else {
+		if (mPressed) {
+			// if the button is in an exclusive group and it's already pressed, don't do anything
+			if (!mExclusive) {
+				// release the button
+				mPressed = false;
+				callEventHandlers();
+			}
+		}
+		else {
+			// if the button is an exclusive group and isn't pressed, release all the buttons in the group first
+			if (mExclusive) {
+				getParent()->releaseGroup(getGroup());
+			}
+			// press the button
+			mPressed = true;
+			callEventHandlers();
+		}
+	}
+}
+
+void MovingGraph::addEventHandler(const std::function<void(bool)>& aEventHandler)
+{
+	mEventHandlers.push_back(aEventHandler);
+}
+
+void MovingGraph::callEventHandlers()
+{
+	for (int i = 0; i < mEventHandlers.size(); i++) {
+		mEventHandlers[i](mPressed);
+	}
 }
 
 void MovingGraph::update()
 {
+	if (mContinuous && mStateless && isActive()) {
+		callEventHandlers();
+	}	
 	mBuffer.push_back( *mLinkedValue );
 
 	if( mBuffer.size() >= mBufferSize )

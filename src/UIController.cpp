@@ -88,7 +88,7 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
 
 	mCbMouseDown = mWindow->getSignalMouseDown().connect( mDepth + 99, std::bind( &UIController::mouseDown, this, std::placeholders::_1 ) );
 
-    // set default fonts
+	// set default fonts
 	setFont( "label", Font( "Arial", 16 * 2 ) );
 	setFont( "smallLabel", Font( "Arial", 12 * 2 ) );
 	setFont( "icon", Font( "Arial", 22 * 2 ) );
@@ -137,13 +137,13 @@ void UIController::draw()
 {
 	if ( !mVisible )
 		return;
-    
-    // save state
-    gl::pushMatrices();
-    glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
+	
+	// save state
+	gl::pushMatrices();
+	glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
 
-    // disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
-    gl::disableDepthRead();
+	// disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
+	gl::disableDepthRead();
 
 	// start drawing to the Fbo
 	mFbo.bindFramebuffer();
@@ -185,10 +185,10 @@ void UIController::draw()
 	gl::color( ColorA( mAlpha, mAlpha, mAlpha, mAlpha ) );
 	gl::draw( mFbo.getTexture() );
 	gl::disableAlphaBlending();
-    
-    // restore state
-    glPopAttrib();
-    gl::popMatrices();
+	
+	// restore state
+	glPopAttrib();
+	gl::popMatrices();
 }
 
 void UIController::update()
@@ -253,7 +253,7 @@ UIElementRef UIController::addSliderCallback( const std::string &aName, float *a
 {
 	UIElementRef sliderCallbackRef = SliderCallback::create( this, aName, aValueToLink, aEventHandler, aParamString );
 	addElement( sliderCallbackRef );
-    return sliderCallbackRef;
+	return sliderCallbackRef;
 }
 
 UIElementRef UIController::addToggleSlider( const string &aSliderName, float *aValueToLink, const string &aButtonName, const function<void (bool)> &aEventHandler, const string &aSliderParamString, const string &aButtonParamString )
@@ -276,10 +276,20 @@ UIElementRef UIController::addToggleSlider( const string &aSliderName, float *aV
 	return toggleSliderRef;
 }
 
-UIElementRef UIController::addMovingGraph( const string &aName, float *aValueToLink, const string &aParamString )
+// without event handler
+UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLink, const string &aParamString)
 {
-	UIElementRef movingGraphRef = MovingGraph::create( this, aName, aValueToLink, aParamString );
-	addElement( movingGraphRef );
+	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aParamString);
+	addElement(movingGraphRef);
+	return movingGraphRef;
+}
+
+// with event handler
+// note: this would be an overloaded addMovingGraph function for consistency, were it not for a visual studio compiler defect (see http://cplusplus.github.io/LWG/lwg-active.html#2132)
+UIElementRef UIController::addMovingGraphButton(const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+{
+	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aEventHandler, aParamString);
+	addElement(movingGraphRef);
 	return movingGraphRef;
 }
 
@@ -296,11 +306,11 @@ void UIController::selectGroupElementByName(const std::string &aGroup, const std
 {
 	for (unsigned int i = 0; i < mUIElements.size(); i++) {
 		if ( mUIElements[i]->getGroup() == aGroup ) {
-            if ( mUIElements[i]->getName() == aName ) {
-                mUIElements[i]->press();
-            } else {
-                mUIElements[i]->release();
-            }
+			if ( mUIElements[i]->getName() == aName ) {
+				mUIElements[i]->press();
+			} else {
+				mUIElements[i]->release();
+			}
 		}
 	}
 }
@@ -318,7 +328,7 @@ void UIController::setPressedByGroup( const std::string &aGroup, const bool &pre
 {
 	for (unsigned int i = 0; i < mUIElements.size(); i++) {
 		if (mUIElements[i]->getGroup() == aGroup ) {
-            pressed ? mUIElements[i]->press() : mUIElements[i]->release();
+			pressed ? mUIElements[i]->press() : mUIElements[i]->release();
 		}
 	}
 }
@@ -326,8 +336,8 @@ void UIController::setPressedByGroup( const std::string &aGroup, const bool &pre
 Font UIController::getFont( const string &aStyle )
 {
 	if ( aStyle == "label" ) {
-        return mLabelFont;
-    } else if ( aStyle == "icon" ) {
+		return mLabelFont;
+	} else if ( aStyle == "icon" ) {
 		return mIconFont;
 	} else if ( aStyle == "header" ) {
 		return mHeaderFont;
@@ -345,8 +355,8 @@ Font UIController::getFont( const string &aStyle )
 void UIController::setFont( const string &aStyle, const ci::Font &aFont )
 {
 	if ( aStyle == "label" ) {
-        mLabelFont = aFont;
-    } else if ( aStyle == "icon" ) {
+		mLabelFont = aFont;
+	} else if ( aStyle == "icon" ) {
 		mIconFont = aFont;
 	} else if ( aStyle == "header" ) {
 		mHeaderFont = aFont;

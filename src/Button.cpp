@@ -67,10 +67,10 @@ void Button::draw()
 
 void Button::press()
 {
-    if ( !mPressed ) {
-        mPressed = true;
-        callEventHandlers();
-    }
+	if ( !mPressed ) {
+		mPressed = true;
+		callEventHandlers();
+	}
 }
 
 void Button::release()
