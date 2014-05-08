@@ -45,6 +45,7 @@ namespace MinimalUI {
 		void deactivate() { mActive = false; }
 		bool isLocked() const { return mLocked; }
 		
+		ci::gl::Texture getBackgroundTexture() const { return mBackgroundTexture; }
 		void setBackgroundTexture( const ci::gl::Texture &aBackgroundTexture ) { mBackgroundTexture = aBackgroundTexture; }
 		
 		ci::ColorA getBackgroundColor() const { return mBackgroundColor; }
