@@ -3,6 +3,7 @@
 #include "Slider.h"
 #include "Button.h"
 #include "Label.h"
+#include "Image.h"
 #include "Graph.h"
 
 using namespace ci;
@@ -240,6 +241,13 @@ UIElementRef UIController::addLabel( const string &aName, const string &aParamSt
 	UIElementRef labelRef = Label::create( this, aName, aParamString );
 	addElement( labelRef );
 	return labelRef;
+}
+
+UIElementRef UIController::addImage( const string &aName, ImageSourceRef aImage, const string &aParamString )
+{
+	UIElementRef imageRef = Image::create( this, aName, aImage, aParamString );
+	addElement( imageRef );
+	return imageRef;
 }
 
 UIElementRef UIController::addSlider2D( const string &aName, Vec2f *aValueToLink, const string &aParamString )
