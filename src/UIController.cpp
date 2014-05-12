@@ -100,6 +100,9 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
 	mInsertPosition = Vec2i( mMarginLarge, mMarginLarge );
 
 	mFboNumSamples = params.hasChild( "fboNumSamples" ) ? params["fboNumSamples"].getValue<int>() : 0;
+	if (params.hasChild("backgroundImage")) {
+		mBackgroundTexture = gl::Texture(loadImage(loadAsset(params["backgroundImage"].getValue<string>())));
+	}
 	setupFbo();
 }
 
@@ -134,6 +137,17 @@ void UIController::mouseDown( MouseEvent &event )
 	}
 }
 
+void UIController::drawBackground()
+{
+	gl::pushMatrices();
+	gl::color(Color::white());
+
+	// draw the background texture if it's defined
+	if (mBackgroundTexture) gl::draw(mBackgroundTexture, mBounds);
+
+	gl::popMatrices();
+}
+
 void UIController::draw()
 {
 	if ( !mVisible )
@@ -162,6 +176,9 @@ void UIController::draw()
 	// draw backing panel
 	gl::color( mPanelColor );
 	gl::drawSolidRect( toPixels( mBounds ) );
+
+	// draw the background
+	drawBackground();
 
 	// draw elements
 	for (unsigned int i = 0; i < mUIElements.size(); i++) {

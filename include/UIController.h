@@ -49,6 +49,7 @@ namespace MinimalUI {
 		
 		void offsetInsertPosition( const ci::Vec2i &offset ) { mInsertPosition += offset; }
 		void resetInsertPosition( const int &offsetY ) { mInsertPosition = ci::Vec2i( mMarginLarge, mInsertPosition.y + offsetY ); }
+		void drawBackground();
 
 		void draw();
 		void update();
@@ -97,7 +98,8 @@ namespace MinimalUI {
 		ci::Vec2i mInsertPosition;
 		ci::ColorA mPanelColor;
 		ci::Font mLabelFont, mSmallLabelFont, mIconFont, mHeaderFont, mBodyFont, mFooterFont;
-		
+		ci::gl::Texture mBackgroundTexture;
+
 		ci::gl::Fbo mFbo;
 		ci::gl::Fbo::Format mFormat;
 		int mFboNumSamples;
