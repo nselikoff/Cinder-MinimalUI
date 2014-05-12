@@ -70,6 +70,9 @@ namespace MinimalUI {
 		ci::Font getFont( const std::string &aStyle );
 		void setFont( const std::string &aStyle, const ci::Font &aFont );
 		
+		ci::gl::Texture getBackgroundTexture() const { return mBackgroundTexture; }
+		void setBackgroundTexture(const ci::gl::Texture &aBackgroundTexture) { mBackgroundTexture = aBackgroundTexture; }
+
 		int getDepth() { return mDepth + mUIElements.size(); }
 		int getWidth() { return mWidth; }
 		ci::Vec2i getPosition() { return mPosition; }
