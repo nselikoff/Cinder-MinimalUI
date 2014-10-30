@@ -76,7 +76,7 @@ UIElement::UIElement( UIController *aUIController, const std::string &aName, con
 	}
 
 	if ( hasParam( "backgroundImage" ) ) {
-		mBackgroundTexture = gl::Texture( loadImage( loadAsset( getParam<string>( "backgroundImage" ) ) ) );
+		mBackgroundTexture = gl::Texture::create( loadImage( loadAsset( getParam<string>( "backgroundImage" ) ) ) );
 	}
 }
 
@@ -85,7 +85,7 @@ void UIElement::offsetInsertPosition()
 	if ( mClear ) {
 		mParent->resetInsertPosition( mBounds.getHeight() + UIController::DEFAULT_MARGIN_SMALL );
 	} else {
-		mParent->offsetInsertPosition( Vec2i( mBounds.getWidth() + UIController::DEFAULT_MARGIN_SMALL, 0 ) );
+		mParent->offsetInsertPosition( ivec2( mBounds.getWidth() + UIController::DEFAULT_MARGIN_SMALL, 0 ) );
 	}
 }
 
@@ -125,8 +125,8 @@ void UIElement::mouseDrag( MouseEvent &event )
 
 void UIElement::renderNameTexture()
 {
-	TextBox textBox = TextBox().size( Vec2i( mSize.x * 2 , TextBox::GROW ) ).font( mFont ).color( mNameColor ).alignment( mAlignment ).text( mName );
-	mNameTexture = textBox.render();
+	TextBox textBox = TextBox().size( ivec2( mSize.x * 2 , TextBox::GROW ) ).font( mFont ).color( mNameColor ).alignment( mAlignment ).text( mName );
+	mNameTexture = gl::Texture::create( textBox.render() );
 }
 
 void UIElement::drawBackground()
@@ -146,13 +146,13 @@ void UIElement::drawLabel()
 	gl::color( Color::white() );
 	
 	// lower right of the name texture
-	Vec2i texLR = toPixels( mNameTexture.getBounds().getLR() / 2 );
+	ivec2 texLR = toPixels( mNameTexture->getBounds().getLR() / 2 );
 	
 	// offset by the upper left of the bounds of the UIElement
-	Vec2i offset = getBounds().getUL();
+	ivec2 offset = getBounds().getUL();
 	
 	// vertically center the label
-	offset += Vec2i( 0, ( getBounds().getHeight() - toPixels( mNameTexture.getHeight() / 2 ) ) / 2 );
+	offset += ivec2( 0, ( getBounds().getHeight() - toPixels( mNameTexture->getHeight() / 2 ) ) / 2 );
 	
 	// draw the label
 	gl::draw( mNameTexture, Area( offset, offset + texLR ) );

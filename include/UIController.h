@@ -35,7 +35,7 @@ namespace MinimalUI {
 		void addElement( const UIElementRef &aElement ) { mUIElements.push_back( aElement ); }
 
 		UIElementRef addSlider( const std::string &aName, float *aValueToLink, const std::string &aParamString = "{}" );
-		UIElementRef addSlider2D( const std::string &aName, ci::Vec2f *aValueToLink, const std::string &aParamString = "{}" );
+		UIElementRef addSlider2D( const std::string &aName, ci::vec2 *aValueToLink, const std::string &aParamString = "{}" );
 		UIElementRef addSliderCallback( const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString = "{}" );
 		UIElementRef addToggleSlider( const std::string &aSliderName, float *aValueToLink, const std::string &aButtonName, const std::function<void( bool )>& aEventHandler, const std::string &aSliderParamString = "{}", const std::string &aButtonParamString = "{}" );
 		UIElementRef addButton( const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString = "{}" );
@@ -47,8 +47,8 @@ namespace MinimalUI {
 
 		void addSeparator() { mInsertPosition.x = mMarginLarge; mInsertPosition.y += mMarginLarge; }
 		
-		void offsetInsertPosition( const ci::Vec2i &offset ) { mInsertPosition += offset; }
-		void resetInsertPosition( const int &offsetY ) { mInsertPosition = ci::Vec2i( mMarginLarge, mInsertPosition.y + offsetY ); }
+		void offsetInsertPosition( const ci::ivec2 &offset ) { mInsertPosition += offset; }
+		void resetInsertPosition( const int &offsetY ) { mInsertPosition = ci::ivec2( mMarginLarge, mInsertPosition.y + offsetY ); }
 		void drawBackground();
 
 		void draw();
@@ -65,17 +65,17 @@ namespace MinimalUI {
 		void setPressedByGroup( const std::string &aGroup, const bool &pressed );
 
 		ci::app::WindowRef getWindow() { return mWindow; }
-		ci::Vec2i getInsertPosition() { return mInsertPosition; }
+		ci::ivec2 getInsertPosition() { return mInsertPosition; }
 		
 		ci::Font getFont( const std::string &aStyle );
 		void setFont( const std::string &aStyle, const ci::Font &aFont );
 		
-		ci::gl::Texture getBackgroundTexture() const { return mBackgroundTexture; }
-		void setBackgroundTexture(const ci::gl::Texture &aBackgroundTexture) { mBackgroundTexture = aBackgroundTexture; }
+		ci::gl::TextureRef getBackgroundTexture() const { return mBackgroundTexture; }
+		void setBackgroundTexture(const ci::gl::TextureRef aBackgroundTexture) { mBackgroundTexture = aBackgroundTexture; }
 
 		int getDepth() { return mDepth + mUIElements.size(); }
 		int getWidth() { return mWidth; }
-		ci::Vec2i getPosition() { return mPosition; }
+		ci::ivec2 getPosition() { return mPosition; }
 		void setHeight() { mHeightSpecified = true; mHeight = mInsertPosition.y + mMarginLarge; resize(); }
 		
 	private:
@@ -97,13 +97,13 @@ namespace MinimalUI {
 		std::vector<UIElementRef> mUIElements;
 		int mWidth, mHeight, mX, mY;
 		ci::Area mBounds;
-		ci::Vec2i mPosition;
-		ci::Vec2i mInsertPosition;
+		ci::ivec2 mPosition;
+		ci::ivec2 mInsertPosition;
 		ci::ColorA mPanelColor;
 		ci::Font mLabelFont, mSmallLabelFont, mIconFont, mHeaderFont, mBodyFont, mFooterFont;
-		ci::gl::Texture mBackgroundTexture;
+		ci::gl::TextureRef mBackgroundTexture;
 
-		ci::gl::Fbo mFbo;
+		ci::gl::FboRef mFbo;
 		ci::gl::Fbo::Format mFormat;
 		int mFboNumSamples;
 		ci::Anim<float> mAlpha;

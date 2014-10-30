@@ -97,11 +97,11 @@ UIController::UIController( app::WindowRef aWindow, const string &aParamString )
 	setFont( "body", Font( "Arial", 19 * 2 ) );
 	setFont( "footer", Font( "Arial Italic", 14 * 2 ) );
 
-	mInsertPosition = Vec2i( mMarginLarge, mMarginLarge );
+	mInsertPosition = ivec2( mMarginLarge, mMarginLarge );
 
 	mFboNumSamples = params.hasChild( "fboNumSamples" ) ? params["fboNumSamples"].getValue<int>() : 0;
 	if (params.hasChild("backgroundImage")) {
-		mBackgroundTexture = gl::Texture(loadImage(loadAsset(params["backgroundImage"].getValue<string>())));
+		mBackgroundTexture = gl::Texture::create(loadImage(loadAsset(params["backgroundImage"].getValue<string>())));
 	}
 	setupFbo();
 }
@@ -113,18 +113,18 @@ UIControllerRef UIController::create( const string &aParamString, app::WindowRef
 
 void UIController::resize()
 {
-	Vec2i size;
+	ivec2 size;
 	if ( mCentered ) {
-		size = Vec2i( mWidth, mHeight );
-		mPosition = getWindow()->getCenter() - size / 2;
+		size = ivec2( mWidth, mHeight );
+		mPosition = ivec2(getWindow()->getCenter().x - size.x / 2, getWindow()->getCenter().y - size.y / 2);
 	} else if ( mHeightSpecified ) {
-		size = Vec2i( mWidth, mHeight );
-		mPosition = Vec2i( mX, mY );
+		size = ivec2( mWidth, mHeight );
+		mPosition = ivec2( mX, mY );
 	} else {
-		size = Vec2i( mWidth, getWindow()->getHeight() );
-		mPosition = Vec2i( mX, mY );
+		size = ivec2( mWidth, getWindow()->getHeight() );
+		mPosition = ivec2( mX, mY );
 	}
-	mBounds = Area( Vec2i::zero(), size );
+	mBounds = Area( ivec2(0), size );
 }
 
 void UIController::mouseDown( MouseEvent &event )
@@ -155,13 +155,13 @@ void UIController::draw()
 	
 	// save state
 	gl::pushMatrices();
-	glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
+	//BL glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
 
 	// disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
 	gl::disableDepthRead();
 
 	// start drawing to the Fbo
-	mFbo.bindFramebuffer();
+	mFbo->bindFramebuffer();
 
 	gl::lineWidth( toPixels( 2.0f ) );
 	gl::enable( GL_LINE_SMOOTH );
@@ -170,7 +170,8 @@ void UIController::draw()
 
 	// clear and set viewport and matrices
 	gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 0.0f ) );
-	gl::setViewport( toPixels( mBounds + mPosition ) );
+	//BL gl::setViewport( toPixels( mBounds + mPosition ) );
+	gl::viewport(mPosition, mBounds.getSize());
 	gl::setMatricesWindow( toPixels( mBounds.getSize() ), false);
 
 	// draw backing panel
@@ -186,10 +187,11 @@ void UIController::draw()
 	}
 
 	// finish drawing to the Fbo
-	mFbo.unbindFramebuffer();
+	mFbo->unbindFramebuffer();
 
 	// reset the matrices and blending
-	gl::setViewport( toPixels( getWindow()->getBounds() ) );
+	//BL gl::setViewport( toPixels( getWindow()->getBounds() ) );
+	gl::viewport(getWindow()->getSize());
 	gl::setMatricesWindow( toPixels( getWindow()->getSize() ) );
 	gl::enableAlphaBlending( true );
 
@@ -201,11 +203,11 @@ void UIController::draw()
 
 	// draw the FBO to the screen
 	gl::color( ColorA( mAlpha, mAlpha, mAlpha, mAlpha ) );
-	gl::draw( mFbo.getTexture() );
+	gl::draw(mFbo->getColorTexture());
 	gl::disableAlphaBlending();
 	
 	// restore state
-	glPopAttrib();
+	//BL glPopAttrib();
 	gl::popMatrices();
 }
 
@@ -267,7 +269,7 @@ UIElementRef UIController::addImage( const string &aName, ImageSourceRef aImage,
 	return imageRef;
 }
 
-UIElementRef UIController::addSlider2D( const string &aName, Vec2f *aValueToLink, const string &aParamString )
+UIElementRef UIController::addSlider2D( const string &aName, vec2 *aValueToLink, const string &aParamString )
 {
 	UIElementRef slider2DRef = Slider2D::create( this, aName, aValueToLink, aParamString );
 	addElement( slider2DRef );
@@ -400,8 +402,8 @@ void UIController::setupFbo()
 {
 	mFormat.enableDepthBuffer( false );
 	mFormat.setSamples( mFboNumSamples );
-	mFbo = gl::Fbo( DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat );
-	mFbo.bindFramebuffer();
+	mFbo = gl::Fbo::create( DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat );
+	mFbo->bindFramebuffer();
 	gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 0.0f ) );
-	mFbo.unbindFramebuffer();
+	mFbo->unbindFramebuffer();
 }

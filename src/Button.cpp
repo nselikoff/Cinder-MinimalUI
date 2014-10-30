@@ -22,7 +22,7 @@ Button::Button( UIController *aUIController, const string &aName, const std::fun
 	// set size and render name texture
 	int x = hasParam( "width" ) ? getParam<int>( "width" ) : Button::DEFAULT_WIDTH;
 	int y = hasParam( "height" ) ? getParam<int>( "height" ) : Button::DEFAULT_HEIGHT;
-	setSize( Vec2i( x, y) );
+	setSize( ivec2( x, y) );
 	renderNameTexture();
 
 	// set position and bounds
@@ -83,7 +83,7 @@ void Button::release()
 	}
 }
 
-void Button::handleMouseUp( const Vec2i &aMousePos )
+void Button::handleMouseUp( const ivec2 &aMousePos )
 {
 	if ( mStateless ) {
 		// mPressed should always be false if it's a stateless button; just call the handler

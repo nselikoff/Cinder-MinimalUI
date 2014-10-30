@@ -42,7 +42,7 @@ Slider::Slider( UIController *aUIController, const string &aName, float *aValueT
 	// set size and render name texture
 	int x = hasParam( "width" ) ? getParam<int>( "width" ) : Slider::DEFAULT_WIDTH;
 	int y = Slider::DEFAULT_HEIGHT;
-	setSize( Vec2i( x, y ) );
+	setSize( ivec2( x, y ) );
 	renderNameTexture();
 
 	// set position and bounds
@@ -100,16 +100,16 @@ void Slider::draw()
 		} else {
 			gl::color( UIController::DEFAULT_STROKE_COLOR );
 		}
-		Vec2f handleStart, handleEnd;
+		vec2 handleStart, handleEnd;
 		if ( mVertical )
 		{
-			handleStart = Vec2f( getBounds().getX1(), toPixels( mValue - Slider::DEFAULT_HANDLE_HALFWIDTH ) );
-			handleEnd = Vec2f( getBounds().getX2(), toPixels( mValue + Slider::DEFAULT_HANDLE_HALFWIDTH ) );
+			handleStart = vec2( getBounds().getX1(), toPixels( mValue - Slider::DEFAULT_HANDLE_HALFWIDTH ) );
+			handleEnd = vec2( getBounds().getX2(), toPixels( mValue + Slider::DEFAULT_HANDLE_HALFWIDTH ) );
 		}
 		else
 		{
-			handleStart = Vec2f( toPixels( mValue - Slider::DEFAULT_HANDLE_HALFWIDTH ), getBounds().getY1() );
-			handleEnd = Vec2f( toPixels( mValue + Slider::DEFAULT_HANDLE_HALFWIDTH ), getBounds().getY2() );
+			handleStart = vec2( toPixels( mValue - Slider::DEFAULT_HANDLE_HALFWIDTH ), getBounds().getY1() );
+			handleEnd = vec2( toPixels( mValue + Slider::DEFAULT_HANDLE_HALFWIDTH ), getBounds().getY2() );
 		}
 		gl::drawStrokedRect( Rectf( handleStart, handleEnd ) );
 		gl::drawSolidRect( Rectf( handleStart, handleEnd ) );
@@ -130,7 +130,7 @@ void Slider::update()
 	}
 }
 
-void Slider::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
+void Slider::handleMouseDown( const ivec2 &aMousePos, const bool isRight )
 {
 	if ( isRight )
 	{
@@ -149,7 +149,7 @@ void Slider::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
 	}
 }
 
-void Slider::handleMouseDrag( const Vec2i &aMousePos )
+void Slider::handleMouseDrag( const ivec2 &aMousePos )
 {
 	if ( mVertical )
 	{
@@ -175,30 +175,30 @@ void Slider::updatePosition( const int &aPos )
 }
 
 // Slider2D
-Slider2D::Slider2D( UIController *aUIController, const string &aName, Vec2f *aValueToLink, const string &aParamString )
+Slider2D::Slider2D( UIController *aUIController, const string &aName, vec2 *aValueToLink, const string &aParamString )
 	: UIElement( aUIController, aName, aParamString )
 {
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
-	mDefaultValue = Vec2f( (*mLinkedValue).x, (*mLinkedValue).y );
+	mDefaultValue = vec2( (*mLinkedValue).x, (*mLinkedValue).y );
 	float minX = hasParam( "minX" ) ? getParam<float>( "minX" ) : 0.0f;
 	float maxX = hasParam( "maxX" ) ? getParam<float>( "maxX" ) : 1.0f;
 	float minY = hasParam( "minY" ) ? getParam<float>( "minY" ) : 0.0f;
 	float maxY = hasParam( "maxY" ) ? getParam<float>( "maxY" ) : 1.0f;
-	mMin = Vec2f( minX, minY );
-	mMax = Vec2f( maxX, maxY );
+	mMin = vec2( minX, minY );
+	mMax = vec2( maxX, maxY );
 
 	// set size and render name texture
 	int x = hasParam( "width" ) ? getParam<int>( "width" ) : Slider2D::DEFAULT_WIDTH;
 	int y = Slider2D::DEFAULT_HEIGHT;
-	setSize( Vec2i( x, y ) );
+	setSize( ivec2( x, y ) );
 	renderNameTexture();
 
 	// set position and bounds
 	setPositionAndBounds();
 
 	// set screen min and max
-	Vec2i offset = Vec2i( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
+	ivec2 offset = ivec2( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
 	mScreenMin = mPosition + offset;
 	mScreenMax = mBounds.getLR() - offset;
 
@@ -206,7 +206,7 @@ Slider2D::Slider2D( UIController *aUIController, const string &aName, Vec2f *aVa
 	update();
 }
 
-UIElementRef Slider2D::create( UIController *aUIController, const string &aName, Vec2f *aValueToLink, const string &aParamString )
+UIElementRef Slider2D::create( UIController *aUIController, const string &aName, vec2 *aValueToLink, const string &aParamString )
 {
 	return shared_ptr<Slider2D>( new Slider2D( aUIController, aName, aValueToLink, aParamString ) );
 }
@@ -222,25 +222,25 @@ void Slider2D::draw()
 
 	// draw the indicator lines
 	gl::color( UIController::ACTIVE_STROKE_COLOR );
-	gl::drawLine( toPixels( Vec2f( mBounds.getX1(), mValue.y ) ), toPixels( Vec2f( mBounds.getX2(), mValue.y ) ) );
-	gl::drawLine( toPixels( Vec2f( mValue.x, mBounds.getY1() ) ), toPixels( Vec2f( mValue.x, mBounds.getY2() ) ) );
+	gl::drawLine( toPixels( vec2( mBounds.getX1(), mValue.y ) ), toPixels( vec2( mBounds.getX2(), mValue.y ) ) );
+	gl::drawLine( toPixels( vec2( mValue.x, mBounds.getY1() ) ), toPixels( vec2( mValue.x, mBounds.getY2() ) ) );
 
 	// draw the handle
-	Vec2f offset = Vec2i( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
-	Vec2f handleStart = toPixels( mValue - offset );
-	Vec2f handleEnd = toPixels( mValue + offset );
+	vec2 offset = ivec2( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
+	vec2 handleStart = toPixels( mValue - offset );
+	vec2 handleEnd = toPixels( mValue + offset );
 	gl::drawStrokedRect( Rectf( handleStart, handleEnd ) );
 	gl::drawSolidRect( Rectf( handleStart, handleEnd ) );
 }
 
 void Slider2D::update()
 {
-	Vec2i offset = Vec2i( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
+	ivec2 offset = ivec2( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
 	mValue.x = lmap<float>((*mLinkedValue).x, mMin.x, mMax.x, mPosition.x + offset.x, mBounds.getX2() - offset.x );
 	mValue.y = lmap<float>((*mLinkedValue).y, mMin.y, mMax.y, mBounds.getY2() - offset.y, mPosition.y + offset.y );
 }
 
-void Slider2D::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
+void Slider2D::handleMouseDown( const ivec2 &aMousePos, const bool isRight )
 {
 	if ( isRight )
 	{
@@ -250,15 +250,15 @@ void Slider2D::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
 	else updatePosition( aMousePos );
 }
 
-void Slider2D::handleMouseDrag( const Vec2i &aMousePos )
+void Slider2D::handleMouseDrag( const ivec2 &aMousePos )
 {
-	Vec2i newPos;
+	ivec2 newPos;
 	newPos.x = math<int>::clamp( aMousePos.x, mScreenMin.x, mScreenMax.x );
 	newPos.y = math<int>::clamp( aMousePos.y, mScreenMin.y, mScreenMax.y );
 	updatePosition( newPos );
 }
 
-void Slider2D::updatePosition( const Vec2i &aPos )
+void Slider2D::updatePosition( const ivec2 &aPos )
 {
 	mValue = aPos;
 	(*mLinkedValue).x = lmap<float>(mValue.x, mScreenMin.x, mScreenMax.x, mMin.x, mMax.x );
@@ -290,7 +290,7 @@ void SliderCallback::callEventHandlers()
 	}
 }
 
-void SliderCallback::handleMouseDown( const Vec2i &aMousePos, const bool isRight )
+void SliderCallback::handleMouseDown( const ivec2 &aMousePos, const bool isRight )
 {
 	callEventHandlers();
 

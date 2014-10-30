@@ -10,13 +10,13 @@ Image::Image( UIController *aUIController, const string &aName, ImageSourceRef a
 	// initialize unique variables
 	
 	// create texture from data source
-	setBackgroundTexture( gl::Texture( aImage ) );
+	setBackgroundTexture(gl::Texture::create(aImage));
 	
 	// set actual size based on the height of the texture, divided by 2 because we render it twice as large for retina displays
 	// if width and/or height are specified, override size
-	int x = hasParam( "width" ) ? getParam<int>( "width" ) : getBackgroundTexture().getWidth() / 2;
-	int y = hasParam( "height" ) ? getParam<int>( "height" ) : getBackgroundTexture().getHeight() / 2;
-	setSize( Vec2i( x, y ) );
+	int x = hasParam("width") ? getParam<int>("width") : getBackgroundTexture()->getWidth() / 2;
+	int y = hasParam( "height" ) ? getParam<int>( "height" ) : getBackgroundTexture()->getHeight() / 2;
+	setSize( ivec2( x, y ) );
 	
 	// set position and bounds
 	setPositionAndBounds();
