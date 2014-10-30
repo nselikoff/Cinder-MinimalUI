@@ -133,7 +133,7 @@ void UIElement::drawBackground()
 {
 	gl::pushMatrices();
 	gl::color( Color::white() );
-	
+
 	// draw the background texture if it's defined
 	if ( mBackgroundTexture ) gl::draw( mBackgroundTexture, getBounds() );
 	
@@ -144,7 +144,6 @@ void UIElement::drawLabel()
 {
 	gl::pushMatrices();
 	gl::color( Color::white() );
-	
 	// lower right of the name texture
 	ivec2 texLR = toPixels( mNameTexture->getBounds().getLR() / 2 );
 	

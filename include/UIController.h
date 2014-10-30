@@ -81,6 +81,7 @@ namespace MinimalUI {
 	private:
 		
 		void setupFbo();
+		void renderToFbo();
 		
 		ci::app::WindowRef mWindow;
 		ci::signals::scoped_connection mCbMouseDown;

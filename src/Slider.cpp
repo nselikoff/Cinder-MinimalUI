@@ -77,6 +77,7 @@ void Slider::draw()
 	} else {
 		gl::color( getBackgroundColor() );
 	}
+
 	gl::drawSolidRect( getBounds() );
 
 	// draw the background
