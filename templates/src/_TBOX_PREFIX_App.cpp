@@ -48,7 +48,7 @@ private:
     MinimalUI::UIControllerRef mParams;
     
     float mZoom;
-    Vec2f mXYSize;
+    vec2 mXYSize;
     int mCount;
     float mZPosition;
     bool mLockZ;
@@ -58,7 +58,6 @@ private:
 
 void _TBOX_PREFIX_App::setup()
 {
- {
     mZoom = 1.0f;
     mXYSize = vec2(1.0);
     mCount = 1;
@@ -80,8 +79,8 @@ void _TBOX_PREFIX_App::setup()
     mParams->addSlider2D( "XY", &mXYSize, "{ \"minX\":-2.0, \"maxX\":2.0, \"minY\":-2.0, \"maxY\":2.0 }" );
     
     // Simple Button
-    mParams->addButton( "Stateless!", std::bind( &minUIApp::buttonCallback, this, std::placeholders::_1 ), "{ \"width\":96, \"clear\":false }" );
-    mParams->addButton( "Stateful!", std::bind( &minUIApp::buttonCallback, this, std::placeholders::_1 ), "{ \"width\":96, \"stateless\":false }" );
+    mParams->addButton( "Stateless!", std::bind( &_TBOX_PREFIX_App::buttonCallback, this, std::placeholders::_1 ), "{ \"width\":96, \"clear\":false }" );
+    mParams->addButton( "Stateful!", std::bind( &_TBOX_PREFIX_App::buttonCallback, this, std::placeholders::_1 ), "{ \"width\":96, \"stateless\":false }" );
     
     // Separator
     mParams->addSeparator();
@@ -90,12 +89,12 @@ void _TBOX_PREFIX_App::setup()
     mParams->addLabel( "Count", "{ \"clear\":false }" );
     
     // Button Group
-    mParams->addButton( "1", std::bind( &minUIApp::setCount, this, 1, std::placeholders::_1 ), "{ \"clear\":false, \"stateless\":false, \"group\":\"count\", \"exclusive\":true, \"pressed\":true }" );
-    mParams->addButton( "2", std::bind( &minUIApp::setCount, this, 2, std::placeholders::_1 ), "{ \"clear\":false, \"stateless\":false, \"group\":\"count\", \"exclusive\":true }" );
-    mParams->addButton( "3", std::bind( &minUIApp::setCount, this, 3, std::placeholders::_1 ), "{ \"stateless\":false, \"group\":\"count\", \"exclusive\":true }" );
+    mParams->addButton( "1", std::bind( &_TBOX_PREFIX_App::setCount, this, 1, std::placeholders::_1 ), "{ \"clear\":false, \"stateless\":false, \"group\":\"count\", \"exclusive\":true, \"pressed\":true }" );
+    mParams->addButton( "2", std::bind( &_TBOX_PREFIX_App::setCount, this, 2, std::placeholders::_1 ), "{ \"clear\":false, \"stateless\":false, \"group\":\"count\", \"exclusive\":true }" );
+    mParams->addButton( "3", std::bind( &_TBOX_PREFIX_App::setCount, this, 3, std::placeholders::_1 ), "{ \"stateless\":false, \"group\":\"count\", \"exclusive\":true }" );
     
     // Toggle Slider
-    mParams->addToggleSlider( "Z Position", &mZPosition, "A", std::bind(&minUIApp::lockZ, this, std::placeholders::_1 ), "{ \"width\":156, \"clear\":false, \"min\": -1, \"max\": 1 }", "{ \"stateless\":false }" );
+    mParams->addToggleSlider( "Z Position", &mZPosition, "A", std::bind(&_TBOX_PREFIX_App::lockZ, this, std::placeholders::_1 ), "{ \"width\":156, \"clear\":false, \"min\": -1, \"max\": 1 }", "{ \"stateless\":false }" );
 
 }
 
