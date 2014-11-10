@@ -154,14 +154,11 @@ void UIController::renderToFbo()
 	// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
 	gl::ScopedFramebuffer fbScp(mFbo);
 	// save state
-	//gl::pushMatrices();
+	gl::pushMatrices();
 	//BL glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
-
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	// disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
 	gl::disableDepthRead();
-
-	// start drawing to the Fbo
-	//BL mFbo->bindFramebuffer();
 
 	gl::lineWidth(toPixels(2.0f));
 	gl::enable(GL_LINE_SMOOTH);
@@ -169,13 +166,10 @@ void UIController::renderToFbo()
 	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	// clear and set viewport and matrices
-	gl::clear(ColorA(1.0f, 0.0f, 0.0f, 0.0f));
-	//BL gl::setViewport( toPixels( mBounds + mPosition ) );
-	//gl::viewport(mPosition, mBounds.getSize());
-	//gl::viewport(0, 0, 216, 480);
+	gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
 	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp(mPosition, mBounds.getSize());//mFbo->getSize()
-	gl::setMatricesWindow(toPixels(mBounds.getSize()), false);//toPixels( mBounds.getSize() ) ivec2(30, 70)
+	gl::ScopedViewport scpVp(mPosition, mFbo->getSize());
+	gl::setMatricesWindow(toPixels(mBounds.getSize()), false);
 
 	// draw backing panel
 	gl::color(mPanelColor);
@@ -192,7 +186,7 @@ void UIController::renderToFbo()
 	// finish drawing to the Fbo
 	//BL mFbo->unbindFramebuffer();
 
-	//gl::popMatrices();
+	gl::popMatrices();
 }
 void UIController::draw()
 {
