@@ -156,7 +156,7 @@ void UIController::renderToFbo()
 	// save state
 	gl::pushMatrices();
 	//BL glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	// disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
 	gl::disableDepthRead();
 
@@ -168,8 +168,13 @@ void UIController::renderToFbo()
 	// clear and set viewport and matrices
 	gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
 	// setup the viewport to match the dimensions of the FBO
-	gl::ScopedViewport scpVp(mPosition, mFbo->getSize());
-	gl::setMatricesWindow(toPixels(mBounds.getSize()), false);
+	//gl::ScopedViewport scpVp(mPosition, mFbo->getSize());
+	//gl::ScopedViewport scpVp(ivec2(0, 1000), mFbo->getSize());
+	//gl::viewport(ivec2(0), mFbo->getSize());
+	//gl::setMatricesWindow(toPixels(mBounds.getSize()), true);
+	gl::pushViewport(gl::getViewport());
+	gl::viewport(mPosition, mFbo->getSize());
+	gl::setMatricesWindow(ivec2(2000,2500), true);
 
 	// draw backing panel
 	gl::color(mPanelColor);
@@ -183,9 +188,7 @@ void UIController::renderToFbo()
 		mUIElements[i]->draw();
 	}
 
-	// finish drawing to the Fbo
-	//BL mFbo->unbindFramebuffer();
-
+	gl::popViewport();
 	gl::popMatrices();
 }
 void UIController::draw()
