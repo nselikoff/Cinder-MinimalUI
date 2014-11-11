@@ -147,38 +147,29 @@ void UIController::drawBackground()
 
 	gl::popMatrices();
 }
+
 void UIController::renderToFbo()
 {
 	// this will restore the old framebuffer binding when we leave this function
 	// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
 	// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
-	gl::ScopedFramebuffer fbScp(mFbo);
-	// save state
-	gl::pushMatrices();
-	//BL glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
-	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-	// disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
-	gl::disableDepthRead();
+	gl::ScopedFramebuffer fbScp( mFbo );
 
-	gl::lineWidth(toPixels(2.0f));
-	gl::enable(GL_LINE_SMOOTH);
+	gl::lineWidth( toPixels( 2.0f ) );
+//	gl::enable( GL_LINE_SMOOTH );
 	gl::enableAlphaBlending();
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	glBlendFuncSeparate( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA );
 
-	// clear and set viewport and matrices
-	gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
-	// setup the viewport to match the dimensions of the FBO
-	//gl::ScopedViewport scpVp(mPosition, mFbo->getSize());
-	//gl::ScopedViewport scpVp(ivec2(0, 1000), mFbo->getSize());
-	//gl::viewport(ivec2(0), mFbo->getSize());
-	//gl::setMatricesWindow(toPixels(mBounds.getSize()), true);
-	gl::pushViewport(gl::getViewport());
-	gl::viewport(mPosition, mFbo->getSize());
-	gl::setMatricesWindow(ivec2(2000,2500), true);
+	// clear and set viewport and matrices to match the position and dimensions of the UIController
+	gl::clear( ColorA( 1.0f, 0.0f, 0.0f, 1.0f ) );
+	// note that the first parameter is the lower left position, hence the offset. otherwise the controller will be drawn in the bottom left of the big FBO.
+	// TODO: test this on retina
+	gl::ScopedViewport scpVp( mPosition + ivec2( 0, mFbo->getHeight() - getWindow()->getHeight() ), mBounds.getSize() );
+	gl::setMatricesWindow( mBounds.getSize() );
 
 	// draw backing panel
-	gl::color(mPanelColor);
-	gl::drawSolidRect(toPixels(mBounds));
+	gl::color( mPanelColor );
+	gl::drawSolidRect( toPixels( mBounds ) );
 
 	// draw the background
 	drawBackground();
@@ -187,35 +178,41 @@ void UIController::renderToFbo()
 	for (unsigned int i = 0; i < mUIElements.size(); i++) {
 		mUIElements[i]->draw();
 	}
-
-	gl::popViewport();
-	gl::popMatrices();
 }
 void UIController::draw()
 {
 	if ( !mVisible )
 		return;
+
+	// save state
+	gl::pushMatrices();
+	//BL glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
+
+	// disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
+	gl::disableDepthRead();
+
 	// render to Fbo
 	renderToFbo();
+	
 	// reset the matrices and blending
-	gl::viewport(getWindow()->getSize());
-	gl::setMatricesWindow(toPixels(getWindowSize()));
+	gl::setMatricesWindow( toPixels( getWindow()->getSize() ) );
 	gl::enableAlphaBlending( true );
 
 	// if forcing interaction, draw an overlay over the whole window
 	if ( mForceInteraction ) {
-		gl::color(ColorA( 0.0f, 0.0f, 0.0f, 0.5f * mAlpha));
+		gl::color( ColorA( 0.0f, 0.0f, 0.0f, 0.5f * mAlpha) );
 		gl::drawSolidRect( toPixels( getWindow()->getBounds() ) );
 	}
 
 	// draw the FBO to the screen
 	gl::color( ColorA( mAlpha, mAlpha, mAlpha, mAlpha ) );
-	gl::draw(mFbo->getColorTexture());
+	gl::draw( mFbo->getColorTexture() );
+
 	gl::disableAlphaBlending();
 	
 	// restore state
 	//BL glPopAttrib();
-	//BL gl::popMatrices();
+	gl::popMatrices();
 }
 
 void UIController::update()
