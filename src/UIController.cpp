@@ -150,44 +150,47 @@ void UIController::drawBackground()
 
 void UIController::draw()
 {
-	if ( !mVisible )
+	if (!mVisible)
 		return;
-	
-	// save state
-	gl::pushMatrices();
-	glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT );
 
-	// disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
-	gl::disableDepthRead();
+		// save state
+		gl::pushMatrices();
+		glPushAttrib(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_LINE_BIT | GL_CURRENT_BIT);
 
-	// start drawing to the Fbo
-	mFbo.bindFramebuffer();
+		// disable depth read (otherwise any 3d drawing done after this will be obscured by the FBO; not exactly sure why)
+		gl::disableDepthRead();
 
-	gl::lineWidth( toPixels( 2.0f ) );
-	gl::enable( GL_LINE_SMOOTH );
-	gl::enableAlphaBlending();
-	glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+	// optimization
+	if (getElapsedFrames() % DEFAULT_UPDATE_FREQUENCY == 0) {
 
-	// clear and set viewport and matrices
-	gl::clear( ColorA( 0.0f, 0.0f, 0.0f, 0.0f ) );
-	gl::setViewport( toPixels( mBounds + mPosition ) );
-	gl::setMatricesWindow( toPixels( mBounds.getSize() ), false);
+		// start drawing to the Fbo
+		mFbo.bindFramebuffer();
 
-	// draw backing panel
-	gl::color( mPanelColor );
-	gl::drawSolidRect( toPixels( mBounds ) );
+		gl::lineWidth(toPixels(2.0f));
+		gl::enable(GL_LINE_SMOOTH);
+		gl::enableAlphaBlending();
+		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-	// draw the background
-	drawBackground();
+		// clear and set viewport and matrices
+		gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
+		gl::setViewport(toPixels(mBounds + mPosition));
+		gl::setMatricesWindow(toPixels(mBounds.getSize()), false);
 
-	// draw elements
-	for (unsigned int i = 0; i < mUIElements.size(); i++) {
-		mUIElements[i]->draw();
+		// draw backing panel
+		gl::color(mPanelColor);
+		gl::drawSolidRect(toPixels(mBounds));
+
+		// draw the background
+		drawBackground();
+
+		// draw elements
+		for (unsigned int i = 0; i < mUIElements.size(); i++) {
+			mUIElements[i]->draw();
+		}
+
+		// finish drawing to the Fbo
+		mFbo.unbindFramebuffer();
 	}
-
-	// finish drawing to the Fbo
-	mFbo.unbindFramebuffer();
-
 	// reset the matrices and blending
 	gl::setViewport( toPixels( getWindow()->getBounds() ) );
 	gl::setMatricesWindow( toPixels( getWindow()->getSize() ) );
