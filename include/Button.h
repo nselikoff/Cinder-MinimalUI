@@ -14,7 +14,7 @@ namespace MinimalUI {
 		void update();
 		void press();
 		void release();
-		void handleMouseUp( const ci::Vec2i &aMousePos );
+		void handleMouseUp( const ci::ivec2 &aMousePos );
 		void addEventHandler( const std::function<void( bool )>& aEventHandler );
 		void callEventHandlers();
 		

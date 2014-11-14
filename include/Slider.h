@@ -13,8 +13,8 @@ namespace MinimalUI {
 		void draw();
 		void update();
 		
-		void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
-		void handleMouseDrag( const ci::Vec2i &aMousePos );
+		void handleMouseDown( const ci::ivec2 &aMousePos, const bool isRight );
+		void handleMouseDrag( const ci::ivec2 &aMousePos );
 		void updatePosition( const int &aPos );
 		
 	protected:
@@ -35,24 +35,24 @@ namespace MinimalUI {
    
 	class Slider2D : public UIElement {
 	public:
-		Slider2D( UIController *aUIController, const std::string &aName, ci::Vec2f *aValueToLink, const std::string &aParamString );
-		static UIElementRef create( UIController *aUIController, const std::string &aName, ci::Vec2f *aValueToLink, const std::string &aParamString );
+		Slider2D( UIController *aUIController, const std::string &aName, ci::vec2 *aValueToLink, const std::string &aParamString );
+		static UIElementRef create( UIController *aUIController, const std::string &aName, ci::vec2 *aValueToLink, const std::string &aParamString );
 		
 		void draw();
 		void update();
 		
-		void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
-		void handleMouseDrag( const ci::Vec2i &aMousePos );
-		void updatePosition( const ci::Vec2i &aPos );
+		void handleMouseDown( const ci::ivec2 &aMousePos, const bool isRight );
+		void handleMouseDrag( const ci::ivec2 &aMousePos );
+		void updatePosition( const ci::ivec2 &aPos );
 		
 	private:
-		ci::Vec2f mMin;
-		ci::Vec2f mMax;
-		ci::Vec2i mScreenMin;
-		ci::Vec2i mScreenMax;
-		ci::Vec2f mValue;
-		ci::Vec2f *mLinkedValue;
-		ci::Vec2f mDefaultValue;
+		ci::vec2 mMin;
+		ci::vec2 mMax;
+		ci::ivec2 mScreenMin;
+		ci::ivec2 mScreenMax;
+		ci::vec2 mValue;
+		ci::vec2 *mLinkedValue;
+		ci::vec2 mDefaultValue;
  
 		static int DEFAULT_HEIGHT;
 		static int DEFAULT_WIDTH;
@@ -64,7 +64,7 @@ namespace MinimalUI {
 		SliderCallback( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
 		static UIElementRef create( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
 		
-		void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight );
+		void handleMouseDown( const ci::ivec2 &aMousePos, const bool isRight );
 		
 		void addEventHandler( const std::function<void()>& aEventHandler );
 		void callEventHandlers();

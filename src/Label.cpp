@@ -14,17 +14,17 @@ Label::Label( UIController *aUIController, const string &aName, const string &aP
 
 	// set initial size and render name texture
 	int x = hasParam( "width" ) ? getParam<int>( "width" ) : Label::DEFAULT_WIDTH;
-	setSize( Vec2i( x, 0 ) );
+	setSize( ivec2( x, 0 ) );
 	renderNameTexture();
 	
 	// set actual size based on the height of the name texture, divided by 2 because we render it twice as large for retina displays
 	int y;
 	if ( mNarrow ) {
-		y = math<float>::min( getNameTexture().getHeight() / 2, UIElement::DEFAULT_HEIGHT );
+		y = math<float>::min(getNameTexture()->getHeight() / 2, UIElement::DEFAULT_HEIGHT);
 	} else {
-		y = math<float>::max( getNameTexture().getHeight() / 2, UIElement::DEFAULT_HEIGHT );
+		y = math<float>::max(getNameTexture()->getHeight() / 2, UIElement::DEFAULT_HEIGHT);
 	}
-	setSize( Vec2i( mSize.x, y ) );
+	setSize( ivec2( mSize.x, y ) );
 
 	// set position and bounds
 	setPositionAndBounds();

@@ -28,7 +28,7 @@ void MovingGraph::init()
 	// set size
 	int x = hasParam("width") ? getParam<int>("width") : MovingGraph::DEFAULT_WIDTH;
 	int y = hasParam("height") ? getParam<int>("height") : MovingGraph::DEFAULT_HEIGHT;
-	setSize(Vec2i(x, y));
+	setSize(ivec2(x, y));
 	
 	// set position and bounds
 	setPositionAndBounds();
@@ -136,7 +136,7 @@ void MovingGraph::release()
 	}
 }
 
-void MovingGraph::handleMouseUp(const Vec2i &aMousePos)
+void MovingGraph::handleMouseUp(const ivec2 &aMousePos)
 {
 	if ( mEventHandlers.size() == 0 )
 		return;

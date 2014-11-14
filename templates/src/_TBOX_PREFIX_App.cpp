@@ -25,6 +25,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
 #include "cinder/app/AppNative.h"
+#include "cinder/app/RendererGl.h"
 #include "cinder/Camera.h"
 
 #include "UIController.h"
@@ -47,7 +48,7 @@ private:
     MinimalUI::UIControllerRef mParams;
     
     float mZoom;
-    Vec2f mXYSize;
+    vec2 mXYSize;
     int mCount;
     float mZPosition;
     bool mLockZ;
@@ -58,7 +59,7 @@ private:
 void _TBOX_PREFIX_App::setup()
 {
     mZoom = 1.0f;
-    mXYSize = Vec2f::one();
+    mXYSize = vec2(1.0);
     mCount = 1;
     mZPosition = 0.0f;
     mLockZ = false;
@@ -67,7 +68,7 @@ void _TBOX_PREFIX_App::setup()
     gl::enableDepthWrite();
     
     mCamera = CameraPersp( getWindowWidth(), getWindowHeight(), 60.0f, 1.0f, 1000.0f );
-	mCamera.lookAt( Vec3f( -2, 2, 2 ), Vec3f::zero() );
+    mCamera.lookAt(vec3(-2, 2, 2), vec3(0.0));
     
     mParams = MinimalUI::UIController::create();
     
@@ -94,6 +95,7 @@ void _TBOX_PREFIX_App::setup()
     
     // Toggle Slider
     mParams->addToggleSlider( "Z Position", &mZPosition, "A", std::bind(&_TBOX_PREFIX_App::lockZ, this, std::placeholders::_1 ), "{ \"width\":156, \"clear\":false, \"min\": -1, \"max\": 1 }", "{ \"stateless\":false }" );
+
 }
 
 void _TBOX_PREFIX_App::update()
@@ -110,13 +112,13 @@ void _TBOX_PREFIX_App::draw()
     gl::setMatrices( mCamera );
     
     gl::pushModelView();
-    gl::scale( Vec3f::one() * mZoom );
+    gl::scale( vec3(1.0) * mZoom );
     gl::color( Color::white() );
     for ( int i = 0; i < mCount; i++ )
     {
         gl::pushModelView();
         gl::translate( i * 1.5f, 0.0f, mZPosition );
-        gl::drawColorCube( Vec3f::zero(), Vec3f( mXYSize, 1.0f ) );
+        gl::drawColorCube( vec3(0.0), vec3( mXYSize, 1.0f ) );
         gl::popModelView();
     }
     gl::popModelView();

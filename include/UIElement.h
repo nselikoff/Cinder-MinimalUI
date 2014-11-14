@@ -27,11 +27,11 @@ namespace MinimalUI {
 		
 		UIController* getParent() const { return mParent; }
 
-		ci::Vec2i getPosition() const { return ci::app::toPixels( mPosition ); }
-		void setPosition( const ci::Vec2i &aPosition ) { mPosition = aPosition; }
+		ci::ivec2 getPosition() const { return ci::app::toPixels( mPosition ); }
+		void setPosition( const ci::ivec2 &aPosition ) { mPosition = aPosition; }
 		
-		ci::Vec2i getSize() const { return ci::app::toPixels( mSize ); }
-		void setSize( const ci::Vec2i &aSize ) { mSize = aSize; }
+		ci::ivec2 getSize() const { return ci::app::toPixels( mSize ); }
+		void setSize( const ci::ivec2 &aSize ) { mSize = aSize; }
 		
 		ci::Area getBounds() const { return ci::app::toPixels( mBounds ); }
 		void setBounds( const ci::Area &aBounds ) { mBounds = aBounds; }
@@ -45,8 +45,8 @@ namespace MinimalUI {
 		void deactivate() { mActive = false; }
 		bool isLocked() const { return mLocked; }
 		
-		ci::gl::Texture getBackgroundTexture() const { return mBackgroundTexture; }
-		void setBackgroundTexture( const ci::gl::Texture &aBackgroundTexture ) { mBackgroundTexture = aBackgroundTexture; }
+		ci::gl::TextureRef getBackgroundTexture() const { return mBackgroundTexture; }
+		void setBackgroundTexture( const ci::gl::TextureRef aBackgroundTexture ) { mBackgroundTexture = aBackgroundTexture; }
 		
 		ci::ColorA getBackgroundColor() const { return mBackgroundColor; }
 		void setBackgroundColor( const ci::ColorA &aBackgroundColor ) { mBackgroundColor = aBackgroundColor; }
@@ -60,8 +60,8 @@ namespace MinimalUI {
 		std::string getName() const { return mName; }
 		void setName( const std::string &aName ) { mName = aName; renderNameTexture(); }
 
-		ci::gl::Texture getNameTexture() const { return mNameTexture; }
-		void setNameTexture( const ci::gl::Texture &aTexture ) { mNameTexture = aTexture; }
+		ci::gl::TextureRef getNameTexture() const { return mNameTexture; }
+		void setNameTexture( const ci::gl::TextureRef aTexture ) { mNameTexture = aTexture; }
 		void drawBackground();
 		void drawLabel();
 		
@@ -70,15 +70,15 @@ namespace MinimalUI {
 		
 		virtual void press() { }
 		virtual void release() { }
-		virtual void handleMouseDown( const ci::Vec2i &aMousePos, const bool isRight ) { }
-		virtual void handleMouseUp( const ci::Vec2i &aMousePos ) { }
-		virtual void handleMouseDrag( const ci::Vec2i &aMousePos ) { }
+		virtual void handleMouseDown( const ci::ivec2 &aMousePos, const bool isRight ) { }
+		virtual void handleMouseUp( const ci::ivec2 &aMousePos ) { }
+		virtual void handleMouseDrag( const ci::ivec2 &aMousePos ) { }
 		
 		static int DEFAULT_HEIGHT;
 
 	protected:
-		ci::Vec2i mPosition;
-		ci::Vec2i mSize;
+		ci::ivec2 mPosition;
+		ci::ivec2 mSize;
 		ci::Area mBounds;
 		
 	private:
@@ -98,8 +98,8 @@ namespace MinimalUI {
 		std::string mGroup;
 		ci::Font mFont;
 		ci::TextBox::Alignment mAlignment;
-		ci::gl::Texture mBackgroundTexture;
-		ci::gl::Texture mNameTexture;
+		ci::gl::TextureRef mBackgroundTexture;
+		ci::gl::TextureRef mNameTexture;
 		ci::ColorA mBackgroundColor, mForegroundColor, mNameColor;
 		bool mActive;
 		bool mLocked;
