@@ -6,14 +6,15 @@
 #include "cinder/ImageIo.h"
 #include "cinder/Text.h"
 #include "cinder/Json.h"
+#include "UIController.h"
 
 namespace MinimalUI {
 	
 	class UIController;
 
-	class UIElement {
+	class UIElement : public std::enable_shared_from_this<UIElement> {
 	public:
-		UIElement( UIController *aUIController, const std::string &aName, const std::string &aParamString );
+		UIElement( UIControllerRef parent, const std::string &aName, ci::JsonTree json );
 		virtual ~UIElement() { }
 		
 		void offsetInsertPosition();
@@ -25,7 +26,7 @@ namespace MinimalUI {
 		
 		void setLocked( const bool &locked ) { mLocked = locked; }
 		
-		UIController* getParent() const { return mParent; }
+		UIControllerRef getParent() const { return mParent; }
 
 		ci::ivec2 getPosition() const { return ci::app::toPixels( mPosition ); }
 		void setPosition( const ci::ivec2 &aPosition ) { mPosition = aPosition; }
@@ -92,7 +93,7 @@ namespace MinimalUI {
 		
 		ci::signals::scoped_connection mCbMouseDown, mCbMouseUp, mCbMouseDrag;
 
-		UIController *mParent;
+		UIControllerRef mParent;
 		ci::JsonTree mParams;
 		std::string mName;
 		std::string mGroup;

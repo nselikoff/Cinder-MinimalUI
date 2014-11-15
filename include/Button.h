@@ -7,8 +7,13 @@ namespace MinimalUI {
 	
 	class Button : public UIElement {
 	public:
-		Button( UIController *aUIController, const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString );
-		static UIElementRef create( UIController *aUIController, const std::string &aName, const std::function<void( bool )>& aEventHandler, const std::string &aParamString );
+		Button( UIControllerRef parent, const std::string &aName, ci::JsonTree json );
+		static UIElementRef create( UIControllerRef parent, const std::string &aName, ci::JsonTree json );
+
+		Button( UIControllerRef parent, const std::string &aName, const std::function<void( bool )>& aEventHandler, ci::JsonTree json );
+		static UIElementRef create( UIControllerRef parent, const std::string &aName, const std::function<void( bool )>& aEventHandler, ci::JsonTree json );
+		
+		void init();
 		
 		void draw();
 		void update();
@@ -34,8 +39,8 @@ namespace MinimalUI {
 	
 	class LinkedButton : public Button {
 	public:
-		LinkedButton( UIController *aUIController, const std::string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, const std::string &aParamString );
-		static UIElementRef create( UIController *aUIController, const std::string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, const std::string &aParamString );
+		LinkedButton( UIControllerRef parent, const std::string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, ci::JsonTree json );
+		static UIElementRef create( UIControllerRef parent, const std::string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, ci::JsonTree json );
 		
 		void update();
 	private:

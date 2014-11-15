@@ -13,8 +13,8 @@ int Slider2D::DEFAULT_HEIGHT = 96;
 int Slider2D::DEFAULT_WIDTH = 96;
 int Slider2D::DEFAULT_HANDLE_HALFWIDTH = 4;
 
-Slider::Slider( UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString )
-	: UIElement( aUIController, aName, aParamString )
+Slider::Slider( UIControllerRef parent, const string &aName, float *aValueToLink, JsonTree json )
+	: UIElement( parent, aName, json )
 {
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
@@ -64,9 +64,9 @@ Slider::Slider( UIController *aUIController, const string &aName, float *aValueT
 	update();
 }
 
-UIElementRef Slider::create( UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString )
+UIElementRef Slider::create( UIControllerRef parent, const string &aName, float *aValueToLink, JsonTree json )
 {
-	return shared_ptr<Slider>( new Slider( aUIController, aName, aValueToLink, aParamString ) );
+	return shared_ptr<Slider>( new Slider( parent, aName, aValueToLink, json ) );
 }
 
 void Slider::draw()
@@ -176,8 +176,8 @@ void Slider::updatePosition( const int &aPos )
 }
 
 // Slider2D
-Slider2D::Slider2D( UIController *aUIController, const string &aName, vec2 *aValueToLink, const string &aParamString )
-	: UIElement( aUIController, aName, aParamString )
+Slider2D::Slider2D( UIControllerRef parent, const string &aName, vec2 *aValueToLink, JsonTree json )
+	: UIElement( parent, aName, json )
 {
 	// initialize unique variables
 	mLinkedValue = aValueToLink;
@@ -207,9 +207,9 @@ Slider2D::Slider2D( UIController *aUIController, const string &aName, vec2 *aVal
 	update();
 }
 
-UIElementRef Slider2D::create( UIController *aUIController, const string &aName, vec2 *aValueToLink, const string &aParamString )
+UIElementRef Slider2D::create( UIControllerRef parent, const string &aName, vec2 *aValueToLink, JsonTree json )
 {
-	return shared_ptr<Slider2D>( new Slider2D( aUIController, aName, aValueToLink, aParamString ) );
+	return shared_ptr<Slider2D>( new Slider2D( parent, aName, aValueToLink, json ) );
 }
 
 void Slider2D::draw()
@@ -267,16 +267,16 @@ void Slider2D::updatePosition( const ivec2 &aPos )
 }
 
 // SliderCallback
-SliderCallback::SliderCallback( UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const string &aParamString )
-: Slider( aUIController, aName, aValueToLink, aParamString )
+SliderCallback::SliderCallback( UIControllerRef parent, const string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, JsonTree json )
+: Slider( parent, aName, aValueToLink, json )
 {
 	// initialize unique variables
 	addEventHandler( aEventHandler );
 }
 
-UIElementRef SliderCallback::create( UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const string &aParamString )
+UIElementRef SliderCallback::create( UIControllerRef parent, const string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, JsonTree json )
 {
-	return shared_ptr<SliderCallback>( new SliderCallback( aUIController, aName, aValueToLink, aEventHandler, aParamString ) );
+	return shared_ptr<SliderCallback>( new SliderCallback( parent, aName, aValueToLink, aEventHandler, json ) );
 }
 
 void SliderCallback::addEventHandler( const std::function<void()>& aEventHandler )

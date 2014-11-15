@@ -7,8 +7,8 @@ namespace MinimalUI {
 
 	class Slider : public UIElement {
 	public:
-		Slider( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::string &aParamString );
-		static UIElementRef create( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::string &aParamString );
+		Slider( UIControllerRef parent, const std::string &aName, float *aValueToLink, ci::JsonTree json );
+		static UIElementRef create( UIControllerRef parent, const std::string &aName, float *aValueToLink, ci::JsonTree json );
 		
 		void draw();
 		void update();
@@ -35,8 +35,8 @@ namespace MinimalUI {
    
 	class Slider2D : public UIElement {
 	public:
-		Slider2D( UIController *aUIController, const std::string &aName, ci::vec2 *aValueToLink, const std::string &aParamString );
-		static UIElementRef create( UIController *aUIController, const std::string &aName, ci::vec2 *aValueToLink, const std::string &aParamString );
+		Slider2D( UIControllerRef parent, const std::string &aName, ci::vec2 *aValueToLink, ci::JsonTree json );
+		static UIElementRef create( UIControllerRef parent, const std::string &aName, ci::vec2 *aValueToLink, ci::JsonTree json );
 		
 		void draw();
 		void update();
@@ -61,8 +61,8 @@ namespace MinimalUI {
 
 	class SliderCallback : public Slider {
 	public:
-		SliderCallback( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
-		static UIElementRef create( UIController *aUIController, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, const std::string &aParamString );
+		SliderCallback( UIControllerRef parent, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, ci::JsonTree json );
+		static UIElementRef create( UIControllerRef parent, const std::string &aName, float *aValueToLink, const std::function<void()>& aEventHandler, ci::JsonTree json );
 		
 		void handleMouseDown( const ci::ivec2 &aMousePos, const bool isRight );
 		

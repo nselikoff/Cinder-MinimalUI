@@ -7,7 +7,7 @@ using namespace MinimalUI;
 
 int Label::DEFAULT_WIDTH = UIElement::DEFAULT_HEIGHT * 2 + UIController::DEFAULT_MARGIN_SMALL;
 
-Label::Label( UIController *aUIController, const string &aName, const string &aParamString ) : UIElement( aUIController, aName, aParamString )
+Label::Label( UIControllerRef parent, const string &aName, JsonTree json ) : UIElement( parent, aName, json )
 {
 	// initialize unique variables
 	mNarrow = hasParam( "narrow" ) ? getParam<bool>( "narrow" ) : false;
@@ -30,9 +30,9 @@ Label::Label( UIController *aUIController, const string &aName, const string &aP
 	setPositionAndBounds();
 }
 
-UIElementRef Label::create( UIController *aUIController, const string &aName, const string &aParamString )
+UIElementRef Label::create( UIControllerRef parent, const string &aName, JsonTree json )
 {
-	return shared_ptr<Label>( new Label( aUIController, aName, aParamString ) );
+	return shared_ptr<Label>( new Label( parent, aName, json ) );
 }
 
 void Label::draw()

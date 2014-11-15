@@ -8,8 +8,8 @@ using namespace MinimalUI;
 
 int UIElement::DEFAULT_HEIGHT = 36;
 
-UIElement::UIElement( UIController *aUIController, const std::string &aName, const std::string &aParamString )
-	: mParent( aUIController ), mName( aName ), mParams( ci::JsonTree( aParamString ) )
+UIElement::UIElement( UIControllerRef parent, const std::string &aName, JsonTree json )
+	: mParent( parent ), mName( aName ), mParams( json )
 {
 	// attach mouse callbacks
 	mCbMouseDown = mParent->getWindow()->getSignalMouseDown().connect( mParent->getDepth(), std::bind( &UIElement::mouseDown, this, std::placeholders::_1 ) );

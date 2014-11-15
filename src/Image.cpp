@@ -5,7 +5,7 @@ using namespace ci::app;
 using namespace std;
 using namespace MinimalUI;
 
-Image::Image( UIController *aUIController, const string &aName, ImageSourceRef aImage, const string &aParamString ) : UIElement( aUIController, aName, aParamString )
+Image::Image( UIControllerRef parent, const string &aName, ImageSourceRef aImage, JsonTree json ) : UIElement( parent, aName, json )
 {
 	// initialize unique variables
 	
@@ -22,9 +22,9 @@ Image::Image( UIController *aUIController, const string &aName, ImageSourceRef a
 	setPositionAndBounds();
 }
 
-UIElementRef Image::create( UIController *aUIController, const string &aName, ImageSourceRef aImage, const string &aParamString )
+UIElementRef Image::create( UIControllerRef parent, const string &aName, ImageSourceRef aImage, JsonTree json )
 {
-	return shared_ptr<Image>( new Image( aUIController, aName, aImage, aParamString ) );
+	return shared_ptr<Image>( new Image( parent, aName, aImage, json ) );
 }
 
 void Image::draw()

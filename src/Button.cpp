@@ -8,11 +8,33 @@ using namespace MinimalUI;
 int Button::DEFAULT_WIDTH = UIElement::DEFAULT_HEIGHT;
 int Button::DEFAULT_HEIGHT = UIElement::DEFAULT_HEIGHT;
 
-Button::Button( UIController *aUIController, const string &aName, const std::function<void( bool )>& aEventHandler, const string &aParamString )
-: UIElement( aUIController, aName, aParamString )
+Button::Button( UIControllerRef parent, const string &aName, JsonTree json )
+: UIElement( parent, aName, json )
+{
+	init();
+}
+
+UIElementRef Button::create( UIControllerRef parent, const string &aName, JsonTree json )
+{
+	return shared_ptr<Button>( new Button( parent, aName, json ) );
+}
+
+Button::Button( UIControllerRef parent, const string &aName, const std::function<void( bool )>& aEventHandler, JsonTree json )
+: UIElement( parent, aName, json )
+{
+	addEventHandler( aEventHandler );
+
+	init();
+}
+
+UIElementRef Button::create( UIControllerRef parent, const string &aName, const std::function<void( bool )>& aEventHandler, JsonTree json )
+{
+	return shared_ptr<Button>( new Button( parent, aName, aEventHandler, json ) );
+}
+
+void Button::init()
 {
 	// initialize unique variables
-	addEventHandler( aEventHandler );
 	mPressed = hasParam( "pressed" ) ? getParam<bool>( "pressed" ) : false;
 	mStateless = hasParam( "stateless" ) ? getParam<bool>( "stateless" ) : true;
 	mExclusive = hasParam( "exclusive" ) ? getParam<bool>( "exclusive" ) : false;
@@ -24,14 +46,9 @@ Button::Button( UIController *aUIController, const string &aName, const std::fun
 	int y = hasParam( "height" ) ? getParam<int>( "height" ) : Button::DEFAULT_HEIGHT;
 	setSize( ivec2( x, y) );
 	renderNameTexture();
-
+	
 	// set position and bounds
 	setPositionAndBounds();
-}
-
-UIElementRef Button::create( UIController *aUIController, const string &aName, const std::function<void( bool )>& aEventHandler, const string &aParamString )
-{
-	return shared_ptr<Button>( new Button( aUIController, aName, aEventHandler, aParamString ) );
 }
 
 void Button::draw()
@@ -129,15 +146,15 @@ void Button::update()
 }
 
 
-LinkedButton::LinkedButton( UIController *aUIController, const string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, const string &aParamString )
-: Button( aUIController, aName, aEventHandler, aParamString )
+LinkedButton::LinkedButton( UIControllerRef parent, const string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, JsonTree json )
+: Button( parent, aName, aEventHandler, json )
 {
 	mLinkedState = aLinkedState;
 }
 
-UIElementRef LinkedButton::create( UIController *aUIController, const string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, const string &aParamString )
+UIElementRef LinkedButton::create( UIControllerRef parent, const string &aName, const std::function<void( bool )>& aEventHandler, bool *aLinkedState, JsonTree json )
 {
-	return shared_ptr<LinkedButton>( new LinkedButton( aUIController, aName, aEventHandler, aLinkedState, aParamString ) );
+	return shared_ptr<LinkedButton>( new LinkedButton( parent, aName, aEventHandler, aLinkedState, json ) );
 }
 
 void LinkedButton::update()

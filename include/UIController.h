@@ -5,6 +5,8 @@
 #include "cinder/gl/gl.h"
 #include "cinder/gl/Fbo.h"
 #include "cinder/Timeline.h"
+#include "cinder/DataSource.h"
+#include "cinder/Json.h"
 #include <vector>
 
 namespace MinimalUI {
@@ -14,7 +16,7 @@ namespace MinimalUI {
 	typedef std::shared_ptr<class UIController> UIControllerRef;
 	typedef std::shared_ptr<class UIElement> UIElementRef;
 
-	class UIController {
+	class UIController : public std::enable_shared_from_this<UIController> {
 	public:
 
 		static int DEFAULT_PANEL_WIDTH;
@@ -27,10 +29,14 @@ namespace MinimalUI {
 		static ci::ColorA DEFAULT_NAME_COLOR;
 		static ci::ColorA DEFAULT_BACKGROUND_COLOR;
 
-		UIController( ci::app::WindowRef window, const std::string &aParamString );
+		UIController( ci::app::WindowRef window, ci::JsonTree json );
 		static UIControllerRef create( const std::string &aParamString = "{}", ci::app::WindowRef aWindow = ci::app::App::get()->getWindow() );
+		static UIControllerRef create( ci::DataSourceRef dataSource, ci::app::WindowRef aWindow = ci::app::App::get()->getWindow() );
 		
 		void mouseDown( ci::app::MouseEvent &event );
+		
+		void setParent( UIControllerRef controller ) { mParentController = controller; }
+		void addChild( UIControllerRef controller ) { controller->setParent( shared_from_this() ); mChildControllers.push_back( controller ); }
 		
 		void addElement( const UIElementRef &aElement ) { mUIElements.push_back( aElement ); }
 
@@ -95,7 +101,10 @@ namespace MinimalUI {
 		int mDepth;
 		int mMarginLarge;
 		
+		UIControllerRef mParentController;
+		std::vector<UIControllerRef> mChildControllers;
 		std::vector<UIElementRef> mUIElements;
+
 		int mWidth, mHeight, mX, mY;
 		ci::Area mBounds;
 		ci::ivec2 mPosition;

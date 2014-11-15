@@ -45,15 +45,15 @@ void MovingGraph::init()
 }
 
 // without event handler
-MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
-: UIElement(aUIController, aName, aParamString), mLinkedValue(aValueToLink)
+MovingGraph::MovingGraph(UIControllerRef parent, const string &aName, float *aValueToLink, JsonTree json)
+: UIElement(parent, aName, json), mLinkedValue(aValueToLink)
 {
 	init();
 }
 
 // with event handler
-MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
-	: UIElement(aUIController, aName, aParamString), mLinkedValue(aValueToLink)
+MovingGraph::MovingGraph(UIControllerRef parent, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, JsonTree json)
+	: UIElement(parent, aName, json), mLinkedValue(aValueToLink)
 {
 	// initialize unique variables
 	addEventHandler(aEventHandler);
@@ -62,15 +62,15 @@ MovingGraph::MovingGraph(UIController *aUIController, const string &aName, float
 }
 
 // without event handler
-UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const string &aParamString)
+UIElementRef MovingGraph::create(UIControllerRef parent, const string &aName, float *aValueToLink, JsonTree json)
 {
-	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aParamString));
+	return shared_ptr<MovingGraph>(new MovingGraph(parent, aName, aValueToLink, json));
 }
 
 // with event handler
-UIElementRef MovingGraph::create(UIController *aUIController, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
+UIElementRef MovingGraph::create(UIControllerRef parent, const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, JsonTree json)
 {
-	return shared_ptr<MovingGraph>(new MovingGraph(aUIController, aName, aValueToLink, aEventHandler, aParamString));
+	return shared_ptr<MovingGraph>(new MovingGraph(parent, aName, aValueToLink, aEventHandler, json));
 }
 
 void MovingGraph::draw()

@@ -23,63 +23,62 @@ ci::ColorA UIController::ACTIVE_STROKE_COLOR = ci::ColorA(0.19f, 0.66f, 0.71f, 1
 ci::ColorA UIController::DEFAULT_NAME_COLOR = ci::ColorA(0.14f, 0.49f, 0.54f, 1.0f);
 ci::ColorA UIController::DEFAULT_BACKGROUND_COLOR = ci::ColorA(0.0f, 0.0f, 0.0f, 1.0f);
 
-UIController::UIController(app::WindowRef aWindow, const string &aParamString)
-	: mWindow(aWindow), mParamString(aParamString)
+UIController::UIController(app::WindowRef aWindow, JsonTree json)
+	: mWindow(aWindow)
 {
-	JsonTree params(mParamString);
-	mVisible = params.hasChild("visible") ? params["visible"].getValue<bool>() : true;
+	mVisible = json.hasChild("visible") ? json["visible"].getValue<bool>() : true;
 	mAlpha = mVisible ? 1.0f : 0.0f;
-	mWidth = params.hasChild("width") ? params["width"].getValue<int>() : DEFAULT_PANEL_WIDTH;
-	mX = params.hasChild("x") ? params["x"].getValue<int>() : 0;
-	mY = params.hasChild("y") ? params["y"].getValue<int>() : 0;
-	if (params.hasChild("height")) {
+	mWidth = json.hasChild("width") ? json["width"].getValue<int>() : DEFAULT_PANEL_WIDTH;
+	mX = json.hasChild("x") ? json["x"].getValue<int>() : 0;
+	mY = json.hasChild("y") ? json["y"].getValue<int>() : 0;
+	if (json.hasChild("height")) {
 		mHeightSpecified = true;
-		mHeight = params["height"].getValue<int>();
+		mHeight = json["height"].getValue<int>();
 	}
 	else {
 		mHeightSpecified = false;
 		mHeight = getWindow()->getHeight();
 	}
-	mCentered = params.hasChild("centered") ? params["centered"].getValue<bool>() : false;
-	mDepth = params.hasChild("depth") ? params["depth"].getValue<int>() : 0;
-	mForceInteraction = params.hasChild("forceInteraction") ? params["forceInteraction"].getValue<bool>() : false;
-	mMarginLarge = params.hasChild("marginLarge") ? params["marginLarge"].getValue<int>() : DEFAULT_MARGIN_LARGE;
+	mCentered = json.hasChild("centered") ? json["centered"].getValue<bool>() : false;
+	mDepth = json.hasChild("depth") ? json["depth"].getValue<int>() : 0;
+	mForceInteraction = json.hasChild("forceInteraction") ? json["forceInteraction"].getValue<bool>() : false;
+	mMarginLarge = json.hasChild("marginLarge") ? json["marginLarge"].getValue<int>() : DEFAULT_MARGIN_LARGE;
 
 	// JSON doesn't support hex literals...
 	std::stringstream str;
-	string panelColor = params.hasChild("panelColor") ? params["panelColor"].getValue<string>() : "0xCC000000";
+	string panelColor = json.hasChild("panelColor") ? json["panelColor"].getValue<string>() : "0xCC000000";
 	str << panelColor;
 	uint32_t hexValue;
 	str >> std::hex >> hexValue;
 	mPanelColor = ColorA::hexA(hexValue);
 
-	if (params.hasChild("defaultStrokeColor"))
+	if (json.hasChild("defaultStrokeColor"))
 	{
-		string strValue = params["defaultStrokeColor"].getValue<string>();
+		string strValue = json["defaultStrokeColor"].getValue<string>();
 		str.clear();
 		str << strValue;
 		str >> std::hex >> hexValue;
 		UIController::DEFAULT_STROKE_COLOR = ColorA::hexA(hexValue);
 	}
-	if (params.hasChild("activeStrokeColor"))
+	if (json.hasChild("activeStrokeColor"))
 	{
-		string strValue = params["activeStrokeColor"].getValue<string>();
+		string strValue = json["activeStrokeColor"].getValue<string>();
 		str.clear();
 		str << strValue;
 		str >> std::hex >> hexValue;
 		UIController::ACTIVE_STROKE_COLOR = ColorA::hexA(hexValue);
 	}
-	if (params.hasChild("defaultNameColor"))
+	if (json.hasChild("defaultNameColor"))
 	{
-		string strValue = params["defaultNameColor"].getValue<string>();
+		string strValue = json["defaultNameColor"].getValue<string>();
 		str.clear();
 		str << strValue;
 		str >> std::hex >> hexValue;
 		UIController::DEFAULT_NAME_COLOR = ColorA::hexA(hexValue);
 	}
-	if (params.hasChild("defaultBackgroundColor"))
+	if (json.hasChild("defaultBackgroundColor"))
 	{
-		string strValue = params["defaultBackgroundColor"].getValue<string>();
+		string strValue = json["defaultBackgroundColor"].getValue<string>();
 		str.clear();
 		str << strValue;
 		str >> std::hex >> hexValue;
@@ -100,16 +99,23 @@ UIController::UIController(app::WindowRef aWindow, const string &aParamString)
 
 	mInsertPosition = ivec2(mMarginLarge, mMarginLarge);
 
-	mFboNumSamples = params.hasChild("fboNumSamples") ? params["fboNumSamples"].getValue<int>() : 0;
-	if (params.hasChild("backgroundImage")) {
-		mBackgroundTexture = gl::Texture::create(loadImage(loadAsset(params["backgroundImage"].getValue<string>())));
+	mFboNumSamples = json.hasChild("fboNumSamples") ? json["fboNumSamples"].getValue<int>() : 0;
+	if (json.hasChild("backgroundImage")) {
+		mBackgroundTexture = gl::Texture::create(loadImage(loadAsset(json["backgroundImage"].getValue<string>())));
 	}
 	setupFbo();
 }
 
 UIControllerRef UIController::create(const string &aParamString, app::WindowRef aWindow)
 {
-	return shared_ptr<UIController>(new UIController(aWindow, aParamString));
+	JsonTree json( aParamString );
+	return shared_ptr<UIController>(new UIController(aWindow, json));
+}
+
+UIControllerRef UIController::create( DataSourceRef dataSource, app::WindowRef aWindow)
+{
+	JsonTree json( dataSource );
+	return shared_ptr<UIController>(new UIController(aWindow, json));
 }
 
 void UIController::resize()
@@ -128,11 +134,19 @@ void UIController::resize()
 		mPosition = ivec2(mX, mY);
 	}
 	mBounds = Area(ivec2(0), size);
+	
+	for ( auto controller : mChildControllers ) {
+		controller->resize();
+	}
 }
 
 void UIController::mouseDown(MouseEvent &event)
 {
-	if (mVisible) {
+	for ( auto controller : mChildControllers ) {
+		controller->mouseDown( event );
+	}
+
+	if ( mVisible && ! event.isHandled() ) {
 		if ((mBounds + mPosition).contains(event.getPos()) || mForceInteraction)
 		{
 			event.setHandled();
@@ -220,6 +234,10 @@ void UIController::draw()
 	// restore state
 	//BL glPopAttrib();
 	gl::popMatrices();
+
+	for ( auto controller : mChildControllers ) {
+		controller->draw();
+	}
 }
 
 void UIController::update()
@@ -231,6 +249,10 @@ void UIController::update()
 		for (unsigned int i = 0; i < mUIElements.size(); i++) {
 			mUIElements[i]->update();
 		}
+	}
+
+	for ( auto controller : mChildControllers ) {
+		controller->update();
 	}
 }
 
@@ -247,49 +269,49 @@ void UIController::hide()
 
 UIElementRef UIController::addSlider(const string &aName, float *aValueToLink, const string &aParamString)
 {
-	UIElementRef sliderRef = Slider::create(this, aName, aValueToLink, aParamString);
+	UIElementRef sliderRef = Slider::create( shared_from_this(), aName, aValueToLink, JsonTree(aParamString));
 	addElement(sliderRef);
 	return sliderRef;
 }
 
 UIElementRef UIController::addButton(const string &aName, const function<void(bool)> &aEventHandler, const string &aParamString)
 {
-	UIElementRef buttonRef = Button::create(this, aName, aEventHandler, aParamString);
+	UIElementRef buttonRef = Button::create(shared_from_this(), aName, aEventHandler, JsonTree(aParamString));
 	addElement(buttonRef);
 	return buttonRef;
 }
 
 UIElementRef UIController::addLinkedButton(const string &aName, const function<void(bool)> &aEventHandler, bool *aLinkedState, const string &aParamString)
 {
-	UIElementRef linkedButtonRef = LinkedButton::create(this, aName, aEventHandler, aLinkedState, aParamString);
+	UIElementRef linkedButtonRef = LinkedButton::create(shared_from_this(), aName, aEventHandler, aLinkedState, JsonTree(aParamString));
 	addElement(linkedButtonRef);
 	return linkedButtonRef;
 }
 
 UIElementRef UIController::addLabel(const string &aName, const string &aParamString)
 {
-	UIElementRef labelRef = Label::create(this, aName, aParamString);
+	UIElementRef labelRef = Label::create(shared_from_this(), aName, JsonTree(aParamString));
 	addElement(labelRef);
 	return labelRef;
 }
 
 UIElementRef UIController::addImage(const string &aName, ImageSourceRef aImage, const string &aParamString)
 {
-	UIElementRef imageRef = Image::create(this, aName, aImage, aParamString);
+	UIElementRef imageRef = Image::create(shared_from_this(), aName, aImage, JsonTree(aParamString));
 	addElement(imageRef);
 	return imageRef;
 }
 
 UIElementRef UIController::addSlider2D(const string &aName, vec2 *aValueToLink, const string &aParamString)
 {
-	UIElementRef slider2DRef = Slider2D::create(this, aName, aValueToLink, aParamString);
+	UIElementRef slider2DRef = Slider2D::create(shared_from_this(), aName, aValueToLink, JsonTree(aParamString));
 	addElement(slider2DRef);
 	return slider2DRef;
 }
 
 UIElementRef UIController::addSliderCallback(const std::string &aName, float *aValueToLink, const std::function<void()> &aEventHandler, const std::string &aParamString)
 {
-	UIElementRef sliderCallbackRef = SliderCallback::create(this, aName, aValueToLink, aEventHandler, aParamString);
+	UIElementRef sliderCallbackRef = SliderCallback::create(shared_from_this(), aName, aValueToLink, aEventHandler, JsonTree(aParamString));
 	addElement(sliderCallbackRef);
 	return sliderCallbackRef;
 }
@@ -297,13 +319,13 @@ UIElementRef UIController::addSliderCallback(const std::string &aName, float *aV
 UIElementRef UIController::addToggleSlider(const string &aSliderName, float *aValueToLink, const string &aButtonName, const function<void(bool)> &aEventHandler, const string &aSliderParamString, const string &aButtonParamString)
 {
 	// create the slider
-	UIElementRef toggleSliderRef = Slider::create(this, aSliderName, aValueToLink, aSliderParamString);
+	UIElementRef toggleSliderRef = Slider::create(shared_from_this(), aSliderName, aValueToLink, JsonTree(aSliderParamString));
 
 	// add the slider to the controller
 	addElement(toggleSliderRef);
 
 	// create the button
-	UIElementRef newButtonRef = Button::create(this, aButtonName, aEventHandler, aButtonParamString);
+	UIElementRef newButtonRef = Button::create(shared_from_this(), aButtonName, aEventHandler, JsonTree(aButtonParamString));
 
 	// add an additional event handler to link the button to the slider
 	std::shared_ptr<class Button> newButton = std::static_pointer_cast<class Button>(newButtonRef);
@@ -317,7 +339,7 @@ UIElementRef UIController::addToggleSlider(const string &aSliderName, float *aVa
 // without event handler
 UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLink, const string &aParamString)
 {
-	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aParamString);
+	UIElementRef movingGraphRef = MovingGraph::create(shared_from_this(), aName, aValueToLink, JsonTree(aParamString));
 	addElement(movingGraphRef);
 	return movingGraphRef;
 }
@@ -326,7 +348,7 @@ UIElementRef UIController::addMovingGraph(const string &aName, float *aValueToLi
 // note: this would be an overloaded addMovingGraph function for consistency, were it not for a visual studio compiler defect (see http://cplusplus.github.io/LWG/lwg-active.html#2132)
 UIElementRef UIController::addMovingGraphButton(const string &aName, float *aValueToLink, const std::function<void(bool)>& aEventHandler, const string &aParamString)
 {
-	UIElementRef movingGraphRef = MovingGraph::create(this, aName, aValueToLink, aEventHandler, aParamString);
+	UIElementRef movingGraphRef = MovingGraph::create(shared_from_this(), aName, aValueToLink, aEventHandler, JsonTree(aParamString));
 	addElement(movingGraphRef);
 	return movingGraphRef;
 }

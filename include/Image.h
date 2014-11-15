@@ -9,8 +9,8 @@ namespace MinimalUI {
 	
 	class Image : public UIElement {
 	public:
-		Image( UIController *aUIController, const std::string &aName, ci::ImageSourceRef aImage, const std::string &aParamString );
-		static UIElementRef create( UIController *aUIController, const std::string &aName, ci::ImageSourceRef aImage, const std::string &aParamString );
+		Image( UIControllerRef parent, const std::string &aName, ci::ImageSourceRef aImage, ci::JsonTree json );
+		static UIElementRef create( UIControllerRef parent, const std::string &aName, ci::ImageSourceRef aImage, ci::JsonTree json );
 		void draw();
 		void update() { }
 		void setPositionAndBounds();
