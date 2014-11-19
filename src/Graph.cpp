@@ -177,6 +177,8 @@ void MovingGraph::callEventHandlers()
 	for (int i = 0; i < mEventHandlers.size(); i++) {
 		mEventHandlers[i](mPressed);
 	}
+	getParent()->setDirty();
+
 }
 
 void MovingGraph::update()

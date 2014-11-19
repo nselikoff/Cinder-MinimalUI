@@ -289,6 +289,8 @@ void SliderCallback::callEventHandlers()
 	for (int i = 0; i < mEventHandlers.size(); i++ ) {
 		mEventHandlers[i]();
 	}
+	getParent()->setDirty();
+
 }
 
 void SliderCallback::handleMouseDown( const ivec2 &aMousePos, const bool isRight )

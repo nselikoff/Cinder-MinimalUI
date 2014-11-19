@@ -63,8 +63,9 @@ namespace MinimalUI {
 		
 		void show();
 		void hide();
-		bool isVisible() { return mVisible; }
-		
+		bool isVisible() { return mVisible; };
+		void setDirty();
+
 		void releaseGroup( const std::string &aGroup );
 		void selectGroupElementByName( const std::string &aGroup, const std::string &aName );
 		void setLockedByGroup( const std::string &aGroup, const bool &locked );
@@ -97,7 +98,8 @@ namespace MinimalUI {
 		bool mCentered;
 		bool mForceInteraction;
 		bool mHeightSpecified;
-		
+		bool mIsDirty;
+
 		int mDepth;
 		int mMarginLarge;
 		

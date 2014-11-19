@@ -84,6 +84,8 @@ UIController::UIController(app::WindowRef aWindow, JsonTree json)
 		str >> std::hex >> hexValue;
 		UIController::DEFAULT_BACKGROUND_COLOR = ColorA::hexA(hexValue);
 	}
+	// draw everything once
+	mIsDirty = true;
 
 	resize();
 
@@ -167,7 +169,7 @@ void UIController::drawBackground()
 
 void UIController::renderToFbo()
 {
-	if (getElapsedFrames() % DEFAULT_UPDATE_FREQUENCY == 0)
+	if (getElapsedFrames() % DEFAULT_UPDATE_FREQUENCY == 0 && mIsDirty)
 	{
 
 		// this will restore the old framebuffer binding when we leave this function
@@ -198,6 +200,7 @@ void UIController::renderToFbo()
 		for (unsigned int i = 0; i < mUIElements.size(); i++) {
 			mUIElements[i]->draw();
 		}
+		mIsDirty = false;
 	}
 }
 void UIController::draw()
@@ -245,7 +248,7 @@ void UIController::update()
 	if (!mVisible)
 		return;
 
-	if (getElapsedFrames() % DEFAULT_UPDATE_FREQUENCY == 0) {
+	if (getElapsedFrames() % DEFAULT_UPDATE_FREQUENCY == 0 && mIsDirty) {
 		for (unsigned int i = 0; i < mUIElements.size(); i++) {
 			mUIElements[i]->update();
 		}
@@ -265,6 +268,11 @@ void UIController::show()
 void UIController::hide()
 {
 	timeline().apply(&mAlpha, 0.0f, 0.25f).finishFn([&]{ mVisible = false; });
+}
+
+void UIController::setDirty()
+{
+	mIsDirty = true;
 }
 
 UIElementRef UIController::addSlider(const string &aName, float *aValueToLink, const string &aParamString)
