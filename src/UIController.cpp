@@ -184,7 +184,7 @@ void UIController::renderToFbo()
 		gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
 		// note that the first parameter is the lower left position, hence the offset. otherwise the controller will be drawn in the bottom left of the big FBO.
 		// TODO: test this on retina
-		gl::ScopedViewport scpVp(mPosition + ivec2(0, mFbo->getHeight() - getWindow()->getHeight()), mBounds.getSize());
+		gl::ScopedViewport scpVp(ivec2(mPosition.x, -mPosition.y) + ivec2(0, mFbo->getHeight() - mBounds.getHeight()), mBounds.getSize());
 		gl::setMatricesWindow(mBounds.getSize());
 
 		// draw backing panel
