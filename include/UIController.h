@@ -113,7 +113,7 @@ namespace MinimalUI {
 		ci::Font mLabelFont, mSmallLabelFont, mIconFont, mHeaderFont, mBodyFont, mFooterFont;
 		ci::gl::TextureRef mBackgroundTexture;
 
-		ci::gl::FboRef mFbo;
+		ci::gl::FboRef mBackgroundFbo, mElementsFbo;
 		ci::gl::Fbo::Format mFormat;
 		int mFboNumSamples;
 		ci::Anim<float> mAlpha;

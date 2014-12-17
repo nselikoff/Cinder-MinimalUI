@@ -169,34 +169,49 @@ void UIController::renderToFbo()
 {
 	if (getElapsedFrames() % DEFAULT_UPDATE_FREQUENCY == 0)
 	{
+		// background
+		// TODO: only draw bg to FBO once unless it's changing
+		{
+			// this will restore the old framebuffer binding when we leave this function
+			// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
+			// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
+			gl::ScopedFramebuffer fbScp(mBackgroundFbo);
+			
+			gl::enableAlphaBlending();
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+			
+			// clear and set viewport and matrices to match the position and dimensions of the UIController
+			gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
+			// note that the first parameter is the lower left position, hence the offset. otherwise the controller will be drawn in the bottom left of the big FBO.
+			// TODO: test this on retina
+			gl::ScopedViewport scpVp(ivec2(mPosition.x, -mPosition.y) + ivec2(0, mBackgroundFbo->getHeight() - mBounds.getHeight()), mBounds.getSize());
+			gl::setMatricesWindow(mBounds.getSize());
+			
+			// draw backing panel
+			gl::color(mPanelColor);
+			gl::drawSolidRect(toPixels(mBounds));
+			
+			// draw the background
+			drawBackground();
+		}
 
-		// this will restore the old framebuffer binding when we leave this function
-		// on non-OpenGL ES platforms, you can just call mFbo->unbindFramebuffer() at the end of the function
-		// but this will restore the "screen" FBO on OpenGL ES, and does the right thing on both platforms
-		gl::ScopedFramebuffer fbScp(mFbo);
+		// elements
+		{
+			gl::ScopedFramebuffer fbScp( mElementsFbo );
 
-		gl::lineWidth(toPixels(2.0f));
-		//	gl::enable( GL_LINE_SMOOTH );
-		gl::enableAlphaBlending();
-		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+			gl::lineWidth(toPixels(2.0f));
+			//	gl::enable( GL_LINE_SMOOTH );
+			gl::enableAlphaBlending();
+			glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-		// clear and set viewport and matrices to match the position and dimensions of the UIController
-		gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
-		// note that the first parameter is the lower left position, hence the offset. otherwise the controller will be drawn in the bottom left of the big FBO.
-		// TODO: test this on retina
-		gl::ScopedViewport scpVp(ivec2(mPosition.x, -mPosition.y) + ivec2(0, mFbo->getHeight() - mBounds.getHeight()), mBounds.getSize());
-		gl::setMatricesWindow(mBounds.getSize());
+			gl::ScopedViewport scpVp(ivec2(mPosition.x, -mPosition.y) + ivec2(0, mElementsFbo->getHeight() - mBounds.getHeight()), mBounds.getSize());
+			gl::setMatricesWindow(mBounds.getSize());
 
-		// draw backing panel
-		gl::color(mPanelColor);
-		gl::drawSolidRect(toPixels(mBounds));
-
-		// draw the background
-		drawBackground();
-
-		// draw elements
-		for (unsigned int i = 0; i < mUIElements.size(); i++) {
-			mUIElements[i]->draw();
+			// draw elements
+			gl::color(Color::white());
+			for (unsigned int i = 0; i < mUIElements.size(); i++) {
+				mUIElements[i]->draw();
+			}
 		}
 	}
 }
@@ -227,7 +242,8 @@ void UIController::draw()
 
 	// draw the FBO to the screen
 	gl::color(ColorA(mAlpha, mAlpha, mAlpha, mAlpha));
-	gl::draw(mFbo->getColorTexture());
+	gl::draw( mBackgroundFbo->getColorTexture() );
+	gl::draw( mElementsFbo->getColorTexture() );
 
 	gl::disableAlphaBlending();
 
@@ -448,8 +464,14 @@ void UIController::setupFbo()
 {
 	mFormat.enableDepthBuffer(false);
 	mFormat.setSamples(mFboNumSamples);
-	mFbo = gl::Fbo::create(DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat);
-	mFbo->bindFramebuffer();
+	mBackgroundFbo = gl::Fbo::create(DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat);
+	mElementsFbo = gl::Fbo::create(DEFAULT_FBO_WIDTH, DEFAULT_FBO_WIDTH, mFormat);
+
+	mBackgroundFbo->bindFramebuffer();
 	gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
-	mFbo->unbindFramebuffer();
+	mBackgroundFbo->unbindFramebuffer();
+
+	mElementsFbo->bindFramebuffer();
+	gl::clear(ColorA(0.0f, 0.0f, 0.0f, 0.0f));
+	mElementsFbo->unbindFramebuffer();
 }

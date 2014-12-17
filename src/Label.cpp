@@ -35,7 +35,7 @@ UIElementRef Label::create( UIControllerRef parent, const string &aName, JsonTre
 	return shared_ptr<Label>( new Label( parent, aName, json ) );
 }
 
-void Label::draw()
+void Label::drawImpl()
 {
 	// draw the background
 	drawBackground();

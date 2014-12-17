@@ -9,7 +9,7 @@ namespace MinimalUI {
 	public:
 		Label( UIControllerRef parent, const std::string &aName, ci::JsonTree json );
 		static UIElementRef create( UIControllerRef parent, const std::string &aName, ci::JsonTree json );
-		void draw();
+		void drawImpl();
 		void update() { }
 		void setPositionAndBounds();
 		

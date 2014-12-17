@@ -66,7 +66,8 @@ namespace MinimalUI {
 		void drawBackground();
 		void drawLabel();
 		
-		virtual void draw() = 0;
+		virtual void draw();
+		virtual void drawImpl() = 0;
 		virtual void update() = 0;
 		
 		virtual void press() { }
@@ -76,11 +77,12 @@ namespace MinimalUI {
 		virtual void handleMouseDrag( const ci::ivec2 &aMousePos ) { }
 		
 		static int DEFAULT_HEIGHT;
-
+		
 	protected:
 		ci::ivec2 mPosition;
 		ci::ivec2 mSize;
 		ci::Area mBounds;
+		bool mFirstDraw;
 		
 	private:
 		// disable copy and operator=

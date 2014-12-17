@@ -27,7 +27,7 @@ UIElementRef Image::create( UIControllerRef parent, const string &aName, ImageSo
 	return shared_ptr<Image>( new Image( parent, aName, aImage, json ) );
 }
 
-void Image::draw()
+void Image::drawImpl()
 {
 	drawBackground();
 }

@@ -15,7 +15,7 @@ namespace MinimalUI {
 		
 		void init();
 		
-		void draw();
+		void drawImpl();
 		void update();
 		void press();
 		void release();
@@ -24,6 +24,7 @@ namespace MinimalUI {
 		void callEventHandlers();
 		
 		void setPressed( const bool &aPressed ) { mPressed = aPressed; }
+		bool isPressed() const { return mPressed; }
 		
 	private:
 		std::vector< std::function<void( bool )> > mEventHandlers;

@@ -20,6 +20,7 @@ namespace MinimalUI {
 
 		void init();
 		void draw();
+		void drawImpl();
 		void update();
 		void press();
 		void release();

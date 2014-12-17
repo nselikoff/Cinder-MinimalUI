@@ -10,7 +10,7 @@ namespace MinimalUI {
 		Slider( UIControllerRef parent, const std::string &aName, float *aValueToLink, ci::JsonTree json );
 		static UIElementRef create( UIControllerRef parent, const std::string &aName, float *aValueToLink, ci::JsonTree json );
 		
-		void draw();
+		void drawImpl();
 		void update();
 		
 		void handleMouseDown( const ci::ivec2 &aMousePos, const bool isRight );
@@ -38,7 +38,7 @@ namespace MinimalUI {
 		Slider2D( UIControllerRef parent, const std::string &aName, ci::vec2 *aValueToLink, ci::JsonTree json );
 		static UIElementRef create( UIControllerRef parent, const std::string &aName, ci::vec2 *aValueToLink, ci::JsonTree json );
 		
-		void draw();
+		void drawImpl();
 		void update();
 		
 		void handleMouseDown( const ci::ivec2 &aMousePos, const bool isRight );

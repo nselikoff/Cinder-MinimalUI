@@ -69,7 +69,7 @@ UIElementRef Slider::create( UIControllerRef parent, const string &aName, float 
 	return shared_ptr<Slider>( new Slider( parent, aName, aValueToLink, json ) );
 }
 
-void Slider::draw()
+void Slider::drawImpl()
 {
 	// draw the solid rect
 	if ( isLocked() ) {
@@ -121,6 +121,8 @@ void Slider::draw()
 
 void Slider::update()
 {
+	float currValue = mValue;
+	
 	if ( mVertical )
 	{
 		mValue = lmap<float>(*mLinkedValue, mMin, mMax, mScreenMin, mScreenMax );
@@ -129,6 +131,10 @@ void Slider::update()
 	{
 		mValue = lmap<float>(*mLinkedValue, mMin, mMax, mScreenMin, mScreenMax );
 	}
+
+	// if the state has changed, set flag to redraw
+	if ( currValue != mValue )
+		mFirstDraw = false;
 }
 
 void Slider::handleMouseDown( const ivec2 &aMousePos, const bool isRight )
@@ -212,7 +218,7 @@ UIElementRef Slider2D::create( UIControllerRef parent, const string &aName, vec2
 	return shared_ptr<Slider2D>( new Slider2D( parent, aName, aValueToLink, json ) );
 }
 
-void Slider2D::draw()
+void Slider2D::drawImpl()
 {
 	// draw the outer rect
 	gl::color( UIController::DEFAULT_STROKE_COLOR );
@@ -236,9 +242,15 @@ void Slider2D::draw()
 
 void Slider2D::update()
 {
+	ivec2 currValue = mValue;
+
 	ivec2 offset = ivec2( Slider2D::DEFAULT_HANDLE_HALFWIDTH, Slider2D::DEFAULT_HANDLE_HALFWIDTH );
 	mValue.x = lmap<float>((*mLinkedValue).x, mMin.x, mMax.x, mPosition.x + offset.x, mBounds.getX2() - offset.x );
 	mValue.y = lmap<float>((*mLinkedValue).y, mMin.y, mMax.y, mBounds.getY2() - offset.y, mPosition.y + offset.y );
+
+	// if the state has changed, set flag to redraw
+	if ( currValue.x != mValue.x || currValue.y != mValue.y )
+		mFirstDraw = false;
 }
 
 void Slider2D::handleMouseDown( const ivec2 &aMousePos, const bool isRight )

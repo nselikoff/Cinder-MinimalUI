@@ -18,6 +18,7 @@ UIElement::UIElement( UIControllerRef parent, const std::string &aName, JsonTree
 
 	// initialize some variables
 	mActive = false;
+	mFirstDraw = false;
 
 	// parse params that are common to all UIElements
 	mGroup = hasParam( "group" ) ? getParam<string>( "group" ) : "";
@@ -111,6 +112,7 @@ void UIElement::mouseUp( MouseEvent &event )
 {
 	if ( mParent->isVisible() && !mLocked && mActive ) {
 		mActive = false;
+		mFirstDraw = false;
 		handleMouseUp( event.getPos() - mParent->getPosition() );
 		//		event.setHandled(); // maybe?
 	}
@@ -157,4 +159,17 @@ void UIElement::drawLabel()
 	gl::draw( mNameTexture, Area( offset, offset + texLR ) );
 
 	gl::popMatrices();
+}
+
+void UIElement::draw()
+{
+	if ( !isActive() ) {
+		if ( mFirstDraw ) {
+			return;
+		} else {
+			mFirstDraw = true;
+		}
+	}
+	
+	drawImpl();
 }

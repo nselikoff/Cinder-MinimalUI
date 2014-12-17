@@ -51,8 +51,8 @@ void Button::init()
 	setPositionAndBounds();
 }
 
-void Button::draw()
-{
+void Button::drawImpl()
+{	
 	// set the color
 	if ( isActive() ) {
 		gl::color( UIController::ACTIVE_STROKE_COLOR );
@@ -159,6 +159,10 @@ UIElementRef LinkedButton::create( UIControllerRef parent, const string &aName, 
 
 void LinkedButton::update()
 {
+	// if the state has changed, set flag to redraw
+	if ( isPressed() != *mLinkedState )
+		mFirstDraw = false;
+	
 	setPressed( *mLinkedState );
 	Button::update();
 }

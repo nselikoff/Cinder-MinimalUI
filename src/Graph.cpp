@@ -75,6 +75,14 @@ UIElementRef MovingGraph::create(UIControllerRef parent, const string &aName, fl
 
 void MovingGraph::draw()
 {
+	// override to avoid typical check for changed state before redrawing;
+	// this UIElement always needs to be redrawn
+	
+	drawImpl();
+}
+
+void MovingGraph::drawImpl()
+{
 	// set the color
 	if ( isActive() && mEventHandlers.size() > 0 ) {
 		gl::color(UIController::ACTIVE_STROKE_COLOR);
